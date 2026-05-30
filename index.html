@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STFC US Servers Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #050810 100%);
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.05em;
+        }
+        .panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 14, 26, 0.95));
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            position: relative;
+        }
+        .panel-number {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 20px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .border-accent-purple { border-left: 4px solid #a855f7; }
+        .border-accent-magenta { border-left: 4px solid #ec4899; }
+        .border-accent-blue { border-left: 4px solid #3b82f6; }
+        .border-accent-cyan { border-left: 4px solid #22d3ee; }
+        .border-accent-orange { border-left: 4px solid #fb923c; }
+        .border-accent-red { border-left: 4px solid #ef4444; }
+        .border-accent-green { border-left: 4px solid #10b981; }
+        .border-accent-amber { border-left: 4px solid #f59e0b; }
+        .border-accent-teal { border-left: 4px solid #14b8a6; }
+        .border-accent-gold { border-left: 4px solid #f7b500; }
+
+        .insight-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-top: 1px solid rgba(71, 85, 105, 0.2);
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        .kpi-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 6px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+
+        .kpi-card.server-63 {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        canvas {
+            max-height: 320px;
+        }
+
+        .ranking-chart {
+            max-height: 400px !important;
+        }
+
+        /* Server 63 Command Center */
+        .command-center {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+            border: 2px solid rgba(251, 191, 36, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.15);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        /* Responsive breakpoints */
+        @media (max-width: 767px) {
+            /* Mobile: Single column, simplified */
+            body { padding: 12px !important; }
+
+            .header-icon { display: none; }
+
+            h1.orbitron { font-size: 20px !important; }
+            .header-subtitle { font-size: 10px !important; }
+
+            .stat-box {
+                min-width: 100% !important;
+                margin-top: 12px;
+            }
+
+            .panel-number {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+                top: 12px;
+                left: 12px;
+            }
+
+            .panel {
+                padding: 12px !important;
+            }
+
+            .kpi-sidebar {
+                width: 100% !important;
+                flex-direction: row !important;
+                gap: 8px !important;
+                margin-top: 12px;
+            }
+
+            .kpi-card {
+                flex: 1;
+                padding: 8px 10px;
+            }
+
+            .insight-box {
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
+            canvas {
+                max-height: 280px !important;
+            }
+
+            .ranking-chart {
+                max-height: 320px !important;
+            }
+
+            .command-center {
+                padding: 16px;
+            }
+
+            .metric-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1399px) {
+            /* Tablet: 2-column layout */
+            body { padding: 20px !important; }
+
+            h1.orbitron { font-size: 28px !important; }
+
+            .dashboard-grid > div[class*="col-span-6"] {
+                grid-column: span 6 !important;
+            }
+
+            canvas {
+                max-height: 360px !important;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            /* Desktop: Full experience */
+            canvas {
+                max-height: 320px;
+            }
+        }
+
+        /* Touch-friendly targets */
+        @media (pointer: coarse) {
+            .kpi-card, .stat-box {
+                min-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6">
+    <div class="max-w-[1920px] mx-auto px-2 md:px-0">
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+            <div class="flex items-center gap-4 flex-1 min-w-[250px]">
+                <div class="header-icon w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                    <svg class="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="orbitron text-4xl font-black text-white leading-tight tracking-wide">STFC US SERVERS DASHBOARD</h1>
+                    <p class="header-subtitle text-sm text-slate-400 mt-1">KEY METRICS ACROSS ALL US SERVERS • SORTED BY CREATION DATE</p>
+                </div>
+            </div>
+            <div class="stat-box text-right min-w-[240px]">
+                <div class="text-xs text-slate-400 mb-1 orbitron">DATA SET: ALL US SERVERS</div>
+                <div class="orbitron text-xl font-bold text-white mb-1" id="header-total">TOTAL SERVERS: --</div>
+                <div class="text-xs text-cyan-400 orbitron" id="header-range">--</div>
+            </div>
+        </div>
+
+        <!-- Server 63 is the featured server -->
+
+        <!-- Server 63 Command Center -->
+        <div id="server63-command-center" class="command-center mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center font-black text-xl text-black">★</div>
+                <div>
+                    <h2 class="orbitron text-xl font-black text-amber-300">SERVER 63 COMMAND CENTER</h2>
+                    <p class="text-xs text-amber-200/70" id="server63-name">Loading...</p>
+                </div>
+            </div>
+            <div class="metric-grid" id="server63-metrics">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid grid grid-cols-12 gap-3 md:gap-4">
+
+            <!-- Panel 1: Ranked Population -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-purple">
+                <div class="panel-number bg-purple-500 text-white">1</div>
+                <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="orbitron text-base font-bold text-purple-300 mb-1">RANKED POPULATION</h3>
+                        <p class="text-xs text-slate-400 mb-4">Servers ranked by number of players (desc)</p>
+                        <canvas id="chart1" class="mb-2 ranking-chart"></canvas>
+                    </div>
+                    <div class="kpi-sidebar kpi-sidebar w-32 flex flex-col gap-2 justify-center">
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-purple-300 font-semibold orbitron mb-1">TOP 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-pop-top">--</div>
+                            <div class="text-[9px] text-slate-400">players</div>
+                        </div>
+                        <div class="kpi-card server-63">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">SERVER 63</div>
+                            <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-pop-63">--</div>
+                            <div class="text-[9px] text-slate-400">players</div>
+                            <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-pop-63-rank">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-purple-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-pop-bot">--</div>
+                            <div class="text-[9px] text-slate-400">players</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span>🏆</span>
+                    <span>Top 5 servers average nearly 2.7x the players of the bottom 5.</span>
+                </div>
+            </div>
+
+            <!-- Panel 2: Average Level -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-magenta">
+                <div class="panel-number bg-pink-500 text-white">2</div>
+                <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="orbitron text-base font-bold text-pink-400 mb-1">AVERAGE LEVEL (LOLLIPOP)</h3>
+                        <p class="text-xs text-slate-400 mb-4">Servers ranked by avg player level (desc)</p>
+                        <canvas id="chart2" class="mb-2 ranking-chart"></canvas>
+                    </div>
+                    <div class="kpi-sidebar w-32 flex flex-col gap-2 justify-center">
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-pink-300 font-semibold orbitron mb-1">TOP 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-level-top">--</div>
+                            <div class="text-[9px] text-slate-400">level</div>
+                        </div>
+                        <div class="kpi-card server-63">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">SERVER 63</div>
+                            <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-level-63">--</div>
+                            <div class="text-[9px] text-slate-400">level</div>
+                            <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-level-63-rank">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-pink-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-level-bot">--</div>
+                            <div class="text-[9px] text-slate-400">level</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span>⭐</span>
+                    <span>Most servers cluster between levels 38 and 45.</span>
+                </div>
+            </div>
+
+            <!-- Panel 3: Total Server Power -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-blue">
+                <div class="panel-number bg-blue-500 text-white">3</div>
+                <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="orbitron text-base font-bold text-blue-300 mb-1">TOTAL SERVER POWER (TRILLIONS)</h3>
+                        <p class="text-xs text-slate-400 mb-4">Servers ranked by total power (desc)</p>
+                        <canvas id="chart3" class="mb-2 ranking-chart"></canvas>
+                    </div>
+                    <div class="kpi-sidebar w-32 flex flex-col gap-2 justify-center">
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-blue-300 font-semibold orbitron mb-1">TOP 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-power-top">--</div>
+                            <div class="text-[9px] text-slate-400">power</div>
+                        </div>
+                        <div class="kpi-card server-63">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">SERVER 63</div>
+                            <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-power-63">--</div>
+                            <div class="text-[9px] text-slate-400">power</div>
+                            <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-power-63-rank">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-blue-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-power-bot">--</div>
+                            <div class="text-[9px] text-slate-400">power</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span>⚡</span>
+                    <span>Top 5 servers hold ~66% of the total power across all US servers.</span>
+                </div>
+            </div>
+
+            <!-- Panel 4: Population vs Average Level -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-cyan">
+                <div class="panel-number bg-cyan-500 text-black">4</div>
+                <div class="p-6 pt-16">
+                    <h3 class="orbitron text-base font-bold text-cyan-300 mb-1">POPULATION vs AVERAGE LEVEL</h3>
+                    <p class="text-xs text-slate-400 mb-4">Population compared to average level</p>
+                    <canvas id="chart4" class="mb-2"></canvas>
+                </div>
+                <div class="insight-box">
+                    <span>💧</span>
+                    <span>Different server archetypes: veterans, powerhouses, and developing giants.</span>
+                </div>
+            </div>
+
+            <!-- Panel 5: Population vs Total Power -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-green">
+                <div class="panel-number bg-green-500 text-black">5</div>
+                <div class="p-6 pt-16">
+                    <h3 class="orbitron text-base font-bold text-green-400 mb-1">POPULATION vs TOTAL POWER</h3>
+                    <p class="text-xs text-slate-400 mb-4">Total power compared to population</p>
+                    <canvas id="chart5" class="mb-2"></canvas>
+                </div>
+                <div class="insight-box">
+                    <span>🌿</span>
+                    <span>Power grows with population, but veteran servers outperform their size.</span>
+                </div>
+            </div>
+
+            <!-- Panel 6: Average Power per Player -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-orange">
+                <div class="panel-number bg-orange-500 text-black">6</div>
+                <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="orbitron text-base font-bold text-orange-400 mb-1">AVERAGE POWER PER PLAYER (MILLIONS)</h3>
+                        <p class="text-xs text-slate-400 mb-4">Servers ranked by average power per player (desc)</p>
+                        <canvas id="chart6" class="mb-2 ranking-chart"></canvas>
+                    </div>
+                    <div class="kpi-sidebar w-32 flex flex-col gap-2 justify-center">
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-orange-300 font-semibold orbitron mb-1">TOP 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-ppp-top">--</div>
+                            <div class="text-[9px] text-slate-400">per player</div>
+                        </div>
+                        <div class="kpi-card server-63">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">SERVER 63</div>
+                            <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-ppp-63">--</div>
+                            <div class="text-[9px] text-slate-400">per player</div>
+                            <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-ppp-63-rank">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-orange-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-ppp-bot">--</div>
+                            <div class="text-[9px] text-slate-400">per player</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span>⚠️</span>
+                    <span>Higher values mean more developed accounts or smaller player base.</span>
+                </div>
+            </div>
+
+            <!-- Panel 7: Incursion Win Rate vs Power per Player -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-red">
+                <div class="panel-number bg-red-500 text-white">7</div>
+                <div class="p-6 pt-16">
+                    <h3 class="orbitron text-base font-bold text-red-400 mb-1">INCURSION WIN RATE vs POWER PER PLAYER</h3>
+                    <p class="text-xs text-slate-400 mb-4">Does more power per player lead to more incursion wins?</p>
+                    <canvas id="chart7" class="mb-2"></canvas>
+                </div>
+                <div class="insight-box">
+                    <span>🔴</span>
+                    <span>No clear relationship—individual power doesn't guarantee incursion wins.</span>
+                </div>
+            </div>
+
+            <!-- Panel 8: Incursion Win Rate Ranking -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-amber">
+                <div class="panel-number bg-amber-500 text-black">8</div>
+                <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="orbitron text-base font-bold text-amber-400 mb-1">INCURSION WIN RATE (%) RANKING</h3>
+                        <p class="text-xs text-slate-400 mb-4">Servers ranked by incursion win rate (desc)</p>
+                        <canvas id="chart8" class="mb-2 ranking-chart"></canvas>
+                    </div>
+                    <div class="kpi-sidebar w-32 flex flex-col gap-2 justify-center">
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">TOP 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-wr-top">--</div>
+                            <div class="text-[9px] text-slate-400">win rate</div>
+                        </div>
+                        <div class="kpi-card server-63">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">SERVER 63</div>
+                            <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-wr-63">--</div>
+                            <div class="text-[9px] text-slate-400">win rate</div>
+                            <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-wr-63-rank">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-[10px] text-amber-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
+                            <div class="text-lg font-bold text-white orbitron" id="kpi-wr-bot">--</div>
+                            <div class="text-[9px] text-slate-400">win rate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span>🏆</span>
+                    <span>Incursion performance varies widely across servers.</span>
+                </div>
+            </div>
+
+            <!-- Panel 9: Server Creation Cohorts -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-blue">
+                <div class="panel-number bg-blue-500 text-white">9</div>
+                <div class="p-6 pt-16">
+                    <h3 class="orbitron text-base font-bold text-blue-300 mb-1">SERVER CREATION COHORTS</h3>
+                    <p class="text-xs text-slate-400 mb-4">Number of servers launched each period</p>
+                    <canvas id="chart9" class="mb-2"></canvas>
+                </div>
+                <div class="insight-box">
+                    <span>📅</span>
+                    <span>Most US servers were launched between 2021 and 2023.</span>
+                </div>
+            </div>
+
+            <!-- Panel 10: Server Age vs Population -->
+            <div class="col-span-12 md:col-span-6 panel border-accent-teal">
+                <div class="panel-number bg-teal-500 text-black">10</div>
+                <div class="p-6 pt-16">
+                    <h3 class="orbitron text-base font-bold text-teal-300 mb-1">SERVER AGE vs POPULATION</h3>
+                    <p class="text-xs text-slate-400 mb-4">Population by server age</p>
+                    <canvas id="chart10" class="mb-2"></canvas>
+                </div>
+                <div class="insight-box">
+                    <span>🕐</span>
+                    <span>On average, population declines ~107 players per server per year (attrition).</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-6 text-center text-xs text-slate-500">
+            <p>📍 Source: stfc.pro/servers | Data: All US Servers (<span id="footer-count">--</span>) | Dashboard Generated: May 30, 2025</p>
+            <p class="mt-1">Note: Data is aggregated from public server statistics. Subject to change.</p>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(71, 85, 105, 0.2)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+        Chart.defaults.plugins.tooltip.borderColor = 'rgba(71, 85, 105, 0.5)';
+        Chart.defaults.plugins.tooltip.borderWidth = 1;
+
+        // Responsive helpers
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+
+        function isTablet() {
+            return window.innerWidth >= 768 && window.innerWidth < 1400;
+        }
+
+        // Calculate responsive marker size for Server 63
+        function getServer63PointRadius(chartWidth, chartHeight, numPoints) {
+            // Base size calculation: use chart dimensions and point density
+            const chartArea = chartWidth * chartHeight;
+            const baseSize = Math.sqrt(chartArea / (numPoints * 100));
+
+            // Clamp to reasonable values: 25-50% larger than normal points
+            const normalSize = isMobile() ? 3 : 4;
+            const minSize = normalSize * 1.25;
+            const maxSize = normalSize * 1.5;
+
+            return Math.max(minSize, Math.min(maxSize, baseSize));
+        }
+
+        // Calculate responsive glow radius
+        function getServer63GlowRadius(pointRadius) {
+            // Glow should be proportional to marker size
+            return pointRadius + (isMobile() ? 3 : 4);
+        }
+
+        // Get normal point radius based on screen size
+        function getNormalPointRadius() {
+            return isMobile() ? 3 : 4;
+        }
+
+        // Custom plugin for featured server enhanced marker with dynamic callout
+        const server63CalloutPlugin = {
+            id: 'server63Callout',
+            afterDatasetsDraw(chart, args, options) {
+                if (!options.enabled || chart.config.type !== 'scatter') return;
+
+                const ctx = chart.ctx;
+                const dataset = chart.data.datasets[0];
+                const meta = chart.getDatasetMeta(0);
+
+                // Find selected server data point
+                const server63Index = dataset.data.findIndex(d => d.id === 63);
+                if (server63Index === -1) return;
+
+                const point = meta.data[server63Index];
+                const dataPoint = dataset.data[server63Index];
+                const mobile = isMobile();
+
+                // Calculate dynamic glow radius based on point size
+                const pointRadius = dataset.pointRadius[server63Index] || 5;
+                const glowRadius = getServer63GlowRadius(pointRadius);
+
+                if (mobile) {
+                    // Mobile: subtle gold glow instead of ring
+                    ctx.save();
+                    const gradient = ctx.createRadialGradient(point.x, point.y, pointRadius, point.x, point.y, glowRadius + 4);
+                    gradient.addColorStop(0, 'rgba(251, 191, 36, 0.4)');
+                    gradient.addColorStop(0.5, 'rgba(251, 191, 36, 0.2)');
+                    gradient.addColorStop(1, 'rgba(251, 191, 36, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, glowRadius + 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                } else {
+                    // Desktop: outer ring with glow
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(247, 181, 0, 0.5)';
+                    ctx.shadowBlur = 12;
+                    ctx.strokeStyle = 'rgba(247, 181, 0, 0.35)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, glowRadius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // Callouts removed - Server 63 is identified by gold marker and glow only
+                // Tooltips will show details on hover/tap
+            }
+        };
+
+        // Calculate smart callout position to avoid dense clusters
+        function calculateCalloutPosition(chart, point, dataPoint, info) {
+            const chartArea = chart.chartArea;
+            const padding = 40;
+
+            // Try positions: top-right, top-left, bottom-right, bottom-left
+            const positions = [
+                { x: point.x + 60, y: point.y - 40, anchor: 'left' },
+                { x: point.x - 60, y: point.y - 40, anchor: 'right' },
+                { x: point.x + 60, y: point.y + 40, anchor: 'left' },
+                { x: point.x - 60, y: point.y + 40, anchor: 'right' }
+            ];
+
+            // Pick position that fits best in chart area
+            for (const pos of positions) {
+                if (pos.x >= chartArea.left + padding &&
+                    pos.x <= chartArea.right - padding &&
+                    pos.y >= chartArea.top + padding &&
+                    pos.y <= chartArea.bottom - padding) {
+                    return pos;
+                }
+            }
+
+            // Default to top-right if no perfect fit
+            return positions[0];
+        }
+
+        // Draw leader line and callout box
+        function drawLeaderLineCallout(ctx, point, callout, info) {
+            ctx.save();
+
+            // Draw leader line
+            ctx.strokeStyle = 'rgba(247, 181, 0, 0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(callout.x, callout.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw callout box
+            const boxWidth = 100;
+            const boxHeight = 50;
+            const boxX = callout.anchor === 'left' ? callout.x : callout.x - boxWidth;
+            const boxY = callout.y - boxHeight / 2;
+
+            // Box background with gradient
+            const gradient = ctx.createLinearGradient(boxX, boxY, boxX, boxY + boxHeight);
+            gradient.addColorStop(0, 'rgba(247, 181, 0, 0.15)');
+            gradient.addColorStop(1, 'rgba(245, 158, 11, 0.1)');
+
+            ctx.fillStyle = gradient;
+            ctx.strokeStyle = 'rgba(247, 181, 0, 0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw text
+            ctx.fillStyle = '#f7b500';
+            ctx.font = 'bold 11px "Orbitron", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`US ${63}`, boxX + boxWidth / 2, boxY + 16);
+
+            ctx.font = '9px "Inter", sans-serif';
+            ctx.fillStyle = '#fbbf24';
+            if (info.line1) ctx.fillText(info.line1, boxX + boxWidth / 2, boxY + 30);
+            if (info.line2) ctx.fillText(info.line2, boxX + boxWidth / 2, boxY + 42);
+
+            ctx.restore();
+        }
+
+        // Register plugin
+        Chart.register(server63CalloutPlugin);
+
+        // Helper function to create ranking display (adapts to screen size)
+        // Always highlights Server 63
+        function createRankingDisplay(sortedData, getValue) {
+            const mobile = isMobile();
+            const topN = mobile ? 3 : 5;
+            const bottomN = mobile ? 3 : 5;
+
+            const topServers = sortedData.slice(-topN).reverse();
+            const bottomServers = sortedData.slice(0, bottomN).reverse();
+
+            const selectedIndex = sortedData.findIndex(s => s.serverid === 63);
+            const selectedRank = selectedIndex >= 0 ? sortedData.length - selectedIndex : null;
+            const server63 = sortedData.find(s => s.serverid === 63);
+
+            // Build display list with separators
+            let displayList = [];
+
+            // Add top servers
+            displayList = [...topServers];
+
+            // Check if Server 63 needs to be added (not in top or bottom)
+            const isSelectedInTop = topServers.some(s => s.serverid === 63);
+            const isSelectedInBottom = bottomServers.some(s => s.serverid === 63);
+
+            if (selectedIndex >= 0 && !isSelectedInTop && !isSelectedInBottom) {
+                // Add separator before selected server
+                displayList.push({ isSeparator: true });
+                // Add selected server
+                displayList.push(server63);
+                // Add separator after selected server
+                displayList.push({ isSeparator: true });
+            }
+
+            // Add bottom servers
+            displayList = [...displayList, ...bottomServers];
+
+            return { displayList, selectedRank, top5: topServers, bottom5: bottomServers };
+        }
+
+        // Helper to calculate averages
+        function avg(arr, getValue) {
+            return arr.reduce((sum, item) => sum + getValue(item), 0) / arr.length;
+        }
+
+        // Helper to format numbers
+        function formatNum(num, decimals = 0) {
+            return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // ========== SERVER 63 FOCUS ==========
+        // Dashboard highlights Server 63 (Tomalak) across all visualizations
+
+        // Update Server 63 command center
+        function updateServer63Display(server63, data) {
+            if (!server63) return;
+
+            // Update server name
+            document.getElementById('server63-name').textContent = `US ${server63.serverid} (${server63.name})`;
+
+            // Calculate ranks
+            const popRank = [...data].sort((a, b) => b.players - a.players).findIndex(s => s.serverid === server63.serverid) + 1;
+            const levelRank = [...data].sort((a, b) => b.avglevel - a.avglevel).findIndex(s => s.serverid === server63.serverid) + 1;
+            const powerRank = [...data].sort((a, b) => b.totalpower - a.totalpower).findIndex(s => s.serverid === server63.serverid) + 1;
+            const pppRank = [...data].sort((a, b) => b.power_per_player - a.power_per_player).findIndex(s => s.serverid === server63.serverid) + 1;
+            const wrRank = data.filter(s => s.total_incursions > 0).sort((a, b) => b.incursion_win_rate - a.incursion_win_rate).findIndex(s => s.serverid === server63.serverid) + 1;
+
+            // Populate metrics
+            const metricsHTML = `
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">POPULATION</div>
+                    <div class="text-base font-bold text-white orbitron">${formatNum(server63.players)}</div>
+                    <div class="text-[8px] text-amber-300 mt-1">Rank #${popRank}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">AVG LEVEL</div>
+                    <div class="text-base font-bold text-white orbitron">${server63.avglevel.toFixed(1)}</div>
+                    <div class="text-[8px] text-amber-300 mt-1">Rank #${levelRank}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">TOTAL POWER</div>
+                    <div class="text-base font-bold text-white orbitron">${(server63.totalpower / 1e12).toFixed(2)}T</div>
+                    <div class="text-[8px] text-amber-300 mt-1">Rank #${powerRank}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">PWR/PLAYER</div>
+                    <div class="text-base font-bold text-white orbitron">${formatNum(server63.power_per_player / 1e6)}M</div>
+                    <div class="text-[8px] text-amber-300 mt-1">Rank #${pppRank}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">WIN RATE</div>
+                    <div class="text-base font-bold text-white orbitron">${server63.total_incursions > 0 ? server63.incursion_win_rate.toFixed(1) + '%' : 'N/A'}</div>
+                    <div class="text-[8px] text-amber-300 mt-1">${server63.total_incursions > 0 ? `Rank #${wrRank}` : 'No data'}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-[9px] text-amber-200/70 font-semibold orbitron mb-1">SERVER AGE</div>
+                    <div class="text-base font-bold text-white orbitron">${server63.server_age_years.toFixed(1)}y</div>
+                    <div class="text-[8px] text-amber-300 mt-1">${server63.creation_year}</div>
+                </div>
+            `;
+
+            document.getElementById('server63-metrics').innerHTML = metricsHTML;
+        }
+
+        // Load data and initialize dashboard
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                console.log(`Loaded ${data.length} servers`);
+
+                // Update header stats
+                document.getElementById('header-total').textContent = `TOTAL SERVERS: ${data.length}`;
+                const minServer = Math.min(...data.map(s => s.serverid));
+                const maxServer = Math.max(...data.map(s => s.serverid));
+                document.getElementById('header-range').textContent = `US ${minServer} \u2192 US ${maxServer}`;
+                document.getElementById('footer-count').textContent = data.length;
+
+                // Find Server 63
+                const server63 = data.find(s => s.serverid === 63);
+                if (!server63) {
+                    console.error('Server 63 not found in data!');
+                    return;
+                }
+
+                // Update Server 63 Command Center
+                updateServer63Display(server63, data);
+
+                // Render all charts with Server 63 highlighted
+                renderAllCharts(server63, data);
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        // Function to render all charts with Server 63 highlighted
+        function renderAllCharts(server63, data) {
+            // ========== PANEL 1: POPULATION RANKING ==========
+            const popSorted = [...data].sort((a, b) => a.players - b.players);
+            const popRanking = createRankingDisplay(popSorted, s => s.players);
+
+                // Populate KPIs
+                document.getElementById('kpi-pop-top').textContent = formatNum(avg(popRanking.top5, s => s.players));
+                document.getElementById('kpi-pop-63').textContent = formatNum(server63.players);
+                document.getElementById('kpi-pop-63-rank').textContent = `Rank #${popRanking.selectedRank}`;
+                document.getElementById('kpi-pop-bot').textContent = formatNum(avg(popRanking.bottom5, s => s.players));
+
+                const chart1 = new Chart(document.getElementById('chart1'), {
+                    type: 'bar',
+                    data: {
+                        labels: popRanking.displayList.map(s => s.isSeparator ? '...' : `US ${s.serverid}`),
+                        datasets: [{
+                            label: 'Players',
+                            data: popRanking.displayList.map(s => s.isSeparator ? 0 : s.players),
+                            backgroundColor: popRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#f7b500' : 'rgba(168, 85, 247, 0.6)')),
+                            borderColor: popRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#ffde59' : 'rgba(168, 85, 247, 0.8)')),
+                            borderWidth: popRanking.displayList.map(s => s.isSeparator ? 0 : (s.serverid === 63 ? 2 : 1))
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                filter: (tooltipItem) => {
+                                    const server = popRanking.displayList[tooltipItem.dataIndex];
+                                    return !server.isSeparator;
+                                },
+                                callbacks: {
+                                    title: (context) => {
+                                        const server = popRanking.displayList[context[0].dataIndex];
+                                        return server.serverid === 63 ? `US ${server.serverid} (${server.name})` : `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => `${formatNum(context.raw)} players`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: popRanking.displayList.map(s => s.isSeparator ? '#64748b' : (s.serverid === 63 ? '#f7b500' : '#94a3b8')),
+                                    font: popRanking.displayList.map(s => ({
+                                        size: s.isSeparator ? 14 : 11,
+                                        weight: s.serverid === 63 ? 'bold' : 'normal'
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 2: AVERAGE LEVEL RANKING ==========
+                const levelSorted = [...data].sort((a, b) => a.avglevel - b.avglevel);
+                const levelRanking = createRankingDisplay(levelSorted, s => s.avglevel, server63);
+
+                // Populate KPIs
+                document.getElementById('kpi-level-top').textContent = avg(levelRanking.top5, s => s.avglevel).toFixed(1);
+                document.getElementById('kpi-level-63').textContent = server63 ? server63.avglevel.toFixed(1) : '--';
+                document.getElementById('kpi-level-63-rank').textContent = levelRanking.selectedRank ? `Rank #${levelRanking.selectedRank}` : '--';
+                document.getElementById('kpi-level-bot').textContent = avg(levelRanking.bottom5, s => s.avglevel).toFixed(1);
+
+                const chart2 = new Chart(document.getElementById('chart2'), {
+                    type: 'bar',
+                    data: {
+                        labels: levelRanking.displayList.map(s => s.isSeparator ? '...' : `US ${s.serverid}`),
+                        datasets: [{
+                            label: 'Avg Level',
+                            data: levelRanking.displayList.map(s => s.isSeparator ? 0 : s.avglevel),
+                            backgroundColor: levelRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#f7b500' : 'rgba(236, 72, 153, 0.6)')),
+                            borderColor: levelRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#ffde59' : 'rgba(236, 72, 153, 0.8)')),
+                            borderWidth: 2,
+                            barThickness: levelRanking.displayList.map(s => s.isSeparator ? 0 : (s.serverid === 63 ? 12 : 6))
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                filter: (tooltipItem) => {
+                                    const server = levelRanking.displayList[tooltipItem.dataIndex];
+                                    return !server.isSeparator;
+                                },
+                                callbacks: {
+                                    title: (context) => {
+                                        const server = levelRanking.displayList[context[0].dataIndex];
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => `Level ${context.raw.toFixed(1)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: levelRanking.displayList.map(s => s.isSeparator ? '#64748b' : (s.serverid === 63 ? '#f7b500' : '#94a3b8')),
+                                    font: levelRanking.displayList.map(s => ({
+                                        size: s.isSeparator ? 14 : 11,
+                                        weight: s.serverid === 63 ? 'bold' : 'normal'
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 3: TOTAL POWER RANKING ==========
+                const powerSorted = [...data].sort((a, b) => a.totalpower - b.totalpower);
+                const powerRanking = createRankingDisplay(powerSorted, s => s.totalpower, server63);
+
+                // Populate KPIs
+                document.getElementById('kpi-power-top').textContent = (avg(powerRanking.top5, s => s.totalpower) / 1e12).toFixed(2) + ' T';
+                document.getElementById('kpi-power-63').textContent = server63 ? (server63.totalpower / 1e12).toFixed(2) + ' T' : '--';
+                document.getElementById('kpi-power-63-rank').textContent = powerRanking.selectedRank ? `Rank #${powerRanking.selectedRank}` : '--';
+                document.getElementById('kpi-power-bot').textContent = (avg(powerRanking.bottom5, s => s.totalpower) / 1e12).toFixed(2) + ' T';
+
+                const chart3 = new Chart(document.getElementById('chart3'), {
+                    type: 'bar',
+                    data: {
+                        labels: powerRanking.displayList.map(s => s.isSeparator ? '...' : `US ${s.serverid}`),
+                        datasets: [{
+                            label: 'Power',
+                            data: powerRanking.displayList.map(s => s.isSeparator ? 0 : s.totalpower / 1e12),
+                            backgroundColor: powerRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#f7b500' : 'rgba(59, 130, 246, 0.6)')),
+                            borderColor: powerRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#ffde59' : 'rgba(59, 130, 246, 0.8)')),
+                            borderWidth: powerRanking.displayList.map(s => s.isSeparator ? 0 : (s.serverid === 63 ? 2 : 1))
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                filter: (tooltipItem) => {
+                                    const server = powerRanking.displayList[tooltipItem.dataIndex];
+                                    return !server.isSeparator;
+                                },
+                                callbacks: {
+                                    title: (context) => {
+                                        const server = powerRanking.displayList[context[0].dataIndex];
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => `${context.raw.toFixed(2)} T`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: powerRanking.displayList.map(s => s.isSeparator ? '#64748b' : (s.serverid === 63 ? '#f7b500' : '#94a3b8')),
+                                    font: powerRanking.displayList.map(s => ({
+                                        size: s.isSeparator ? 14 : 11,
+                                        weight: s.serverid === 63 ? 'bold' : 'normal'
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 4: POPULATION vs AVERAGE LEVEL ==========
+                const popMedian = data.map(s => s.players).sort((a,b) => a-b)[Math.floor(data.length/2)];
+                const levelMedian = data.map(s => s.avglevel).sort((a,b) => a-b)[Math.floor(data.length/2)];
+
+                // Get chart dimensions for responsive sizing
+                const chart4Canvas = document.getElementById('chart4');
+                const chart4Width = chart4Canvas.offsetWidth || 600;
+                const chart4Height = 320;
+                const server63Radius4 = getServer63PointRadius(chart4Width, chart4Height, data.length);
+                const normalRadius4 = getNormalPointRadius();
+
+                const chart4 = new Chart(document.getElementById('chart4'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Servers',
+                            data: data.map(s => ({ x: s.players, y: s.avglevel, id: s.serverid })),
+                            backgroundColor: data.map(s => s.serverid === 63 ? '#f7b500' : 'rgba(34, 211, 238, 0.5)'),
+                            borderColor: data.map(s => s.serverid === 63 ? '#ffde59' : 'rgba(34, 211, 238, 0.7)'),
+                            borderWidth: data.map(s => s.serverid === 63 ? 2 : 1),
+                            pointRadius: data.map(s => s.serverid === 63 ? server63Radius4 : normalRadius4),
+                            pointStyle: data.map(s => s.serverid === 63 ? 'rectRot' : 'circle'),
+                            pointHoverRadius: data.map(s => s.serverid === 63 ? server63Radius4 + 2 : normalRadius4 + 2)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                        },
+                        onClick: (event, activeElements) => {
+                            if (isMobile() && activeElements.length > 0) {
+                                const element = activeElements[0];
+                                const point = event.chart.data.datasets[0].data[element.index];
+                                if (point.id === 63) {
+                                    const server = data.find(s => s.serverid === 63);
+                                    alert(`🌟 SERVER 63 (${server.name})\\n\\nPopulation: ${formatNum(server.players)}\\nAvg Level: ${server.avglevel.toFixed(1)}\\nRank: #34 of 62`);
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            server63Callout: {
+                                enabled: true,
+                                showCallout: false,
+                                info: {
+                                    line1: server63 ? `Pop: ${formatNum(server63.players)}` : '',
+                                    line2: server63 ? `Lvl: ${server63.avglevel.toFixed(1)}` : ''
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: (context) => {
+                                        const point = context[0].raw;
+                                        const server = data.find(s => s.serverid === point.id);
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => [
+                                        `Population: ${formatNum(context.raw.x)}`,
+                                        `Avg Level: ${context.raw.y.toFixed(1)}`
+                                    ]
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    vline: {
+                                        type: 'line',
+                                        xMin: popMedian,
+                                        xMax: popMedian,
+                                        borderColor: 'rgba(148, 163, 184, 0.3)',
+                                        borderWidth: 1,
+                                        borderDash: [5, 5]
+                                    },
+                                    hline: {
+                                        type: 'line',
+                                        yMin: levelMedian,
+                                        yMax: levelMedian,
+                                        borderColor: 'rgba(148, 163, 184, 0.3)',
+                                        borderWidth: 1,
+                                        borderDash: [5, 5]
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Population (Players)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                title: { display: true, text: 'Average Player Level', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 5: POPULATION vs TOTAL POWER ==========
+                const chart5Canvas = document.getElementById('chart5');
+                const chart5Width = chart5Canvas.offsetWidth || 600;
+                const chart5Height = 320;
+                const server63Radius5 = getServer63PointRadius(chart5Width, chart5Height, data.length);
+                const normalRadius5 = getNormalPointRadius();
+
+                const chart5 = new Chart(document.getElementById('chart5'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Servers',
+                            data: data.map(s => ({ x: s.players, y: s.totalpower / 1e12, id: s.serverid })),
+                            backgroundColor: data.map(s => s.serverid === 63 ? '#f7b500' : 'rgba(16, 185, 129, 0.5)'),
+                            borderColor: data.map(s => s.serverid === 63 ? '#ffde59' : 'rgba(16, 185, 129, 0.7)'),
+                            borderWidth: data.map(s => s.serverid === 63 ? 2 : 1),
+                            pointRadius: data.map(s => s.serverid === 63 ? server63Radius5 : normalRadius5),
+                            pointStyle: data.map(s => s.serverid === 63 ? 'rectRot' : 'circle'),
+                            pointHoverRadius: data.map(s => s.serverid === 63 ? server63Radius5 + 2 : normalRadius5 + 2)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                        },
+                        onClick: (event, activeElements) => {
+                            if (isMobile() && activeElements.length > 0) {
+                                const element = activeElements[0];
+                                const point = event.chart.data.datasets[0].data[element.index];
+                                if (point.id === 63) {
+                                    const server = data.find(s => s.serverid === 63);
+                                    alert(`🌟 SERVER 63 (${server.name})\n\nPopulation: ${formatNum(server.players)}\nTotal Power: ${(server.totalpower / 1e12).toFixed(2)}T\nRank: #42 of 62`);
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            server63Callout: {
+                                enabled: true,
+                                showCallout: false,
+                                info: {
+                                    line1: server63 ? `Pop: ${formatNum(server63.players)}` : '',
+                                    line2: server63 ? `Pwr: ${(server63.totalpower / 1e12).toFixed(2)}T` : ''
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: (context) => {
+                                        const point = context[0].raw;
+                                        const server = data.find(s => s.serverid === point.id);
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => [
+                                        `Population: ${formatNum(context.raw.x)}`,
+                                        `Power: ${context.raw.y.toFixed(2)} T`
+                                    ]
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Population (Players)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                type: 'logarithmic',
+                                title: { display: true, text: 'Total Power (Trillions, log scale)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 6: POWER PER PLAYER RANKING ==========
+                const pppSorted = [...data].sort((a, b) => a.power_per_player - b.power_per_player);
+                const pppRanking = createRankingDisplay(pppSorted, s => s.power_per_player, server63);
+
+                // Populate KPIs
+                document.getElementById('kpi-ppp-top').textContent = formatNum(avg(pppRanking.top5, s => s.power_per_player) / 1e6, 0) + ' M';
+                document.getElementById('kpi-ppp-63').textContent = server63 ? formatNum(server63.power_per_player / 1e6, 0) + ' M' : '--';
+                document.getElementById('kpi-ppp-63-rank').textContent = pppRanking.selectedRank ? `Rank #${pppRanking.selectedRank}` : '--';
+                document.getElementById('kpi-ppp-bot').textContent = formatNum(avg(pppRanking.bottom5, s => s.power_per_player) / 1e6, 0) + ' M';
+
+                const chart6 = new Chart(document.getElementById('chart6'), {
+                    type: 'bar',
+                    data: {
+                        labels: pppRanking.displayList.map(s => s.isSeparator ? '...' : `US ${s.serverid}`),
+                        datasets: [{
+                            label: 'Power/Player',
+                            data: pppRanking.displayList.map(s => s.isSeparator ? 0 : s.power_per_player / 1e6),
+                            backgroundColor: pppRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#f7b500' : 'rgba(251, 146, 60, 0.6)')),
+                            borderColor: pppRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#ffde59' : 'rgba(251, 146, 60, 0.8)')),
+                            borderWidth: pppRanking.displayList.map(s => s.isSeparator ? 0 : (s.serverid === 63 ? 2 : 1))
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                filter: (tooltipItem) => {
+                                    const server = pppRanking.displayList[tooltipItem.dataIndex];
+                                    return !server.isSeparator;
+                                },
+                                callbacks: {
+                                    title: (context) => {
+                                        const server = pppRanking.displayList[context[0].dataIndex];
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => `${formatNum(context.raw, 0)} M per player`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: pppRanking.displayList.map(s => s.isSeparator ? '#64748b' : (s.serverid === 63 ? '#f7b500' : '#94a3b8')),
+                                    font: pppRanking.displayList.map(s => ({
+                                        size: s.isSeparator ? 14 : 11,
+                                        weight: s.serverid === 63 ? 'bold' : 'normal'
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 7: INCURSION WIN RATE vs POWER PER PLAYER ==========
+                const withIncursions = data.filter(s => s.total_incursions > 0);
+                const winRateMedian = withIncursions.map(s => s.incursion_win_rate).sort((a,b) => a-b)[Math.floor(withIncursions.length/2)];
+
+                const chart7Canvas = document.getElementById('chart7');
+                const chart7Width = chart7Canvas.offsetWidth || 600;
+                const chart7Height = 320;
+                const server63Radius7 = getServer63PointRadius(chart7Width, chart7Height, withIncursions.length);
+                const normalRadius7 = getNormalPointRadius();
+
+                const chart7 = new Chart(document.getElementById('chart7'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Servers',
+                            data: withIncursions.map(s => ({ x: s.power_per_player / 1e6, y: s.incursion_win_rate, id: s.serverid })),
+                            backgroundColor: withIncursions.map(s => s.serverid === 63 ? '#f7b500' : 'rgba(239, 68, 68, 0.5)'),
+                            borderColor: withIncursions.map(s => s.serverid === 63 ? '#ffde59' : 'rgba(239, 68, 68, 0.7)'),
+                            borderWidth: withIncursions.map(s => s.serverid === 63 ? 2 : 1),
+                            pointRadius: withIncursions.map(s => s.serverid === 63 ? server63Radius7 : normalRadius7),
+                            pointStyle: withIncursions.map(s => s.serverid === 63 ? 'rectRot' : 'circle'),
+                            pointHoverRadius: withIncursions.map(s => s.serverid === 63 ? server63Radius7 + 2 : normalRadius7 + 2)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                        },
+                        onClick: (event, activeElements) => {
+                            if (isMobile() && activeElements.length > 0) {
+                                const element = activeElements[0];
+                                const point = event.chart.data.datasets[0].data[element.index];
+                                if (point.id === 63) {
+                                    const server = data.find(s => s.serverid === 63);
+                                    alert(`🌟 SERVER 63 (${server.name})\n\nPower/Player: ${formatNum(server.power_per_player / 1e6, 0)}M\nWin Rate: ${server.incursion_win_rate.toFixed(1)}%\nRank: #30 of 62`);
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            server63Callout: {
+                                enabled: true,
+                                showCallout: false,
+                                info: {
+                                    line1: server63 && server63.total_incursions > 0 ? `PPP: ${formatNum(server63.power_per_player / 1e6, 0)}M` : '',
+                                    line2: server63 && server63.total_incursions > 0 ? `WR: ${server63.incursion_win_rate.toFixed(1)}%` : ''
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: (context) => {
+                                        const point = context[0].raw;
+                                        const server = data.find(s => s.serverid === point.id);
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => [
+                                        `PPP: ${formatNum(context.raw.x, 0)} M`,
+                                        `Win Rate: ${context.raw.y.toFixed(1)}%`
+                                    ]
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    medianLine: {
+                                        type: 'line',
+                                        yMin: winRateMedian,
+                                        yMax: winRateMedian,
+                                        borderColor: 'rgba(148, 163, 184, 0.3)',
+                                        borderWidth: 1,
+                                        borderDash: [5, 5]
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Power per Player (Millions)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                title: { display: true, text: 'Incursion Win Rate (%)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                min: 0,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 8: INCURSION WIN RATE RANKING ==========
+                const wrSorted = [...withIncursions].sort((a, b) => a.incursion_win_rate - b.incursion_win_rate);
+                const wrRanking = createRankingDisplay(wrSorted, s => s.incursion_win_rate, server63);
+
+                // Populate KPIs
+                document.getElementById('kpi-wr-top').textContent = avg(wrRanking.top5, s => s.incursion_win_rate).toFixed(1) + '%';
+                document.getElementById('kpi-wr-63').textContent = server63 && server63.total_incursions > 0 ? server63.incursion_win_rate.toFixed(1) + '%' : '--';
+                document.getElementById('kpi-wr-63-rank').textContent = wrRanking.selectedRank ? `Rank #${wrRanking.selectedRank}` : '--';
+                document.getElementById('kpi-wr-bot').textContent = avg(wrRanking.bottom5, s => s.incursion_win_rate).toFixed(1) + '%';
+
+                const chart8 = new Chart(document.getElementById('chart8'), {
+                    type: 'bar',
+                    data: {
+                        labels: wrRanking.displayList.map(s => s.isSeparator ? '...' : `US ${s.serverid}`),
+                        datasets: [{
+                            label: 'Win Rate',
+                            data: wrRanking.displayList.map(s => s.isSeparator ? 0 : s.incursion_win_rate),
+                            backgroundColor: wrRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#f7b500' : 'rgba(245, 158, 11, 0.6)')),
+                            borderColor: wrRanking.displayList.map(s => s.isSeparator ? 'transparent' : (s.serverid === 63 ? '#ffde59' : 'rgba(245, 158, 11, 0.8)')),
+                            borderWidth: wrRanking.displayList.map(s => s.isSeparator ? 0 : (s.serverid === 63 ? 2 : 1))
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                filter: (tooltipItem) => {
+                                    const server = wrRanking.displayList[tooltipItem.dataIndex];
+                                    return !server.isSeparator;
+                                },
+                                callbacks: {
+                                    title: (context) => {
+                                        const server = wrRanking.displayList[context[0].dataIndex];
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => `${context.raw.toFixed(1)}% win rate`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                min: 0,
+                                max: 100,
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: wrRanking.displayList.map(s => s.isSeparator ? '#64748b' : (s.serverid === 63 ? '#f7b500' : '#94a3b8')),
+                                    font: wrRanking.displayList.map(s => ({
+                                        size: s.isSeparator ? 14 : 11,
+                                        weight: s.serverid === 63 ? 'bold' : 'normal'
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 9: SERVER CREATION COHORTS ==========
+                const years = {};
+                data.forEach(s => {
+                    const year = s.creation_year || 2019;
+                    years[year] = (years[year] || 0) + 1;
+                });
+                const sortedYears = Object.keys(years).sort();
+
+                const chart9 = new Chart(document.getElementById('chart9'), {
+                    type: 'bar',
+                    data: {
+                        labels: sortedYears,
+                        datasets: [{
+                            label: 'Servers',
+                            data: sortedYears.map(y => years[y]),
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.raw} servers`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // ========== PANEL 10: SERVER AGE vs POPULATION (with trend line) ==========
+                const ageData = data.filter(s => s.server_age_years).map(s => ({
+                    x: s.server_age_years,
+                    y: s.players,
+                    id: s.serverid
+                }));
+
+                // Calculate linear regression for trend line
+                const n = ageData.length;
+                const sumX = ageData.reduce((sum, p) => sum + p.x, 0);
+                const sumY = ageData.reduce((sum, p) => sum + p.y, 0);
+                const sumXY = ageData.reduce((sum, p) => sum + p.x * p.y, 0);
+                const sumX2 = ageData.reduce((sum, p) => sum + p.x * p.x, 0);
+
+                const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                const intercept = (sumY - slope * sumX) / n;
+
+                const minAge = Math.min(...ageData.map(p => p.x));
+                const maxAge = Math.max(...ageData.map(p => p.x));
+                const trendLine = [
+                    { x: minAge, y: slope * minAge + intercept },
+                    { x: maxAge, y: slope * maxAge + intercept }
+                ];
+
+                const chart10Canvas = document.getElementById('chart10');
+                const chart10Width = chart10Canvas.offsetWidth || 600;
+                const chart10Height = 320;
+                const server63Radius10 = getServer63PointRadius(chart10Width, chart10Height, ageData.length);
+                const normalRadius10 = getNormalPointRadius();
+
+                const chart10 = new Chart(document.getElementById('chart10'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Servers',
+                            data: ageData,
+                            backgroundColor: data.map(s => s.serverid === 63 ? '#f7b500' : 'rgba(20, 184, 166, 0.5)'),
+                            borderColor: data.map(s => s.serverid === 63 ? '#ffde59' : 'rgba(20, 184, 166, 0.7)'),
+                            borderWidth: data.map(s => s.serverid === 63 ? 2 : 1),
+                            pointRadius: data.map(s => s.serverid === 63 ? server63Radius10 : normalRadius10),
+                            pointHoverRadius: data.map(s => s.serverid === 63 ? server63Radius10 + 2 : normalRadius10 + 2),
+                            pointStyle: data.map(s => s.serverid === 63 ? 'rectRot' : 'circle')
+                        }, {
+                            label: 'Trend',
+                            data: trendLine,
+                            type: 'line',
+                            borderColor: 'rgba(148, 163, 184, 0.4)',
+                            borderWidth: 2,
+                            borderDash: [8, 4],
+                            pointRadius: 0,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        onHover: (event, activeElements) => {
+                            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                        },
+                        onClick: (event, activeElements) => {
+                            if (isMobile() && activeElements.length > 0) {
+                                const element = activeElements[0];
+                                if (element.datasetIndex === 0) {
+                                    const point = event.chart.data.datasets[0].data[element.index];
+                                    if (point.id === 63) {
+                                        const server = data.find(s => s.serverid === 63);
+                                        alert(`🌟 SERVER 63 (${server.name})\n\nServer Age: ${server.server_age_years.toFixed(1)}y\nPopulation: ${formatNum(server.players)}\nRank: #50 of 62`);
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            server63Callout: {
+                                enabled: true,
+                                showCallout: false,
+                                info: {
+                                    line1: server63 ? `Age: ${server63.server_age_years.toFixed(1)}y` : '',
+                                    line2: server63 ? `Pop: ${formatNum(server63.players)}` : ''
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: (context) => {
+                                        if (context[0].datasetIndex === 1) return 'Trend Line';
+                                        const point = context[0].raw;
+                                        const server = data.find(s => s.serverid === point.id);
+                                        return `US ${server.serverid} (${server.name})`;
+                                    },
+                                    label: (context) => {
+                                        if (context.datasetIndex === 1) return `Slope: ${slope.toFixed(0)} players/year`;
+                                        return [
+                                            `Age: ${context.raw.x.toFixed(1)} years`,
+                                            `Population: ${formatNum(context.raw.y)}`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Server Age (Years)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y: {
+                                title: { display: true, text: 'Population (Players)', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
