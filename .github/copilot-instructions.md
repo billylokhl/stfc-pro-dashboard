@@ -117,6 +117,40 @@ gh repo view
 gh api ...
 ```
 
+#### VS Code Stability Precautions
+To prevent window crashes and interruptions:
+
+**Commit Frequently:**
+- Commit working changes after each major step
+- Create Git checkpoints before risky operations
+- Never lose more than 5-10 minutes of work
+
+**Conservative Operation Batching:**
+- Limit parallel file operations to 3-5 files maximum
+- Avoid reading multiple large files simultaneously
+- Prefer sequential operations when stability is critical
+
+**Terminal Output Management:**
+- Avoid commands that produce excessive output (>1000 lines)
+- Use `head`, `tail`, or `grep` to limit output
+- Add `--quiet` or `--silent` flags when available
+- Test with `--dry-run` flags before actual execution
+
+**Checkpoint Pattern for Complex Tasks:**
+```bash
+# Step 1: Make changes to files
+# Step 2: Test/verify
+# Step 3: Commit immediately
+git add <changed-files>
+git commit -m "Checkpoint: [specific change]"
+# Step 4: Continue to next change
+```
+
+**Long-Running Operations:**
+- Break into smaller incremental steps
+- Provide progress updates between steps
+- Commit after each successful substep
+
 ### Refactoring Rules
 
 - Prefer modifying existing working code over rewriting working code.
