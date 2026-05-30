@@ -96,6 +96,27 @@ git push
 
 Never combine these operations.
 
+#### GitHub CLI (`gh`) Execution
+For GitHub CLI operations:
+
+- Execute `gh` commands individually, never chained with other operations
+- Verify authentication status before API operations
+- Use non-interactive mode where possible to avoid hanging prompts
+- Add explicit timeouts for long-running API calls
+- Wait for complete output before proceeding
+
+Example safe pattern:
+```bash
+# Step 1: Check authentication
+gh auth status
+
+# Step 2: Execute API operation (separate execution)
+gh repo view
+
+# Step 3: Configure Pages (separate execution)
+gh api ...
+```
+
 ### Refactoring Rules
 
 - Prefer modifying existing working code over rewriting working code.
