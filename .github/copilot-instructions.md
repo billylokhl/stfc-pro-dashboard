@@ -22,6 +22,80 @@ For major features:
 
 Avoid implementing large multi-component changes in a single pass.
 
+### Terminal Execution Rules
+
+**CRITICAL: These rules prevent Exit Code 130 failures and execution race conditions.**
+
+#### Command Chaining Prohibition
+**NEVER chain commands using `&&`, `||`, or `;` in terminal executions.**
+
+Forbidden patterns:
+```bash
+# FORBIDDEN - Do NOT do this
+git add . && git commit -m "message"
+npm install && npm run build
+command1 && command2 || fallback
+```
+
+Required pattern:
+```bash
+# CORRECT - Execute separately and sequentially
+# Step 1:
+git add .
+
+# Wait for successful completion (exit code 0)
+
+# Step 2 (separate execution):
+git commit -m "message"
+```
+
+#### Atomic Operations
+High-risk operations must be executed as separate, independent commands:
+
+- **Git operations:** Never combine `git add` and `git commit`
+- **Build chains:** Never combine `npm install` and `npm run build`
+- **File operations:** Never combine `mkdir` and file creation commands
+- **Multi-step deployments:** Break into individual verification steps
+
+Each command must:
+1. Execute independently
+2. Complete successfully (exit code 0)
+3. Be verified before proceeding to the next command
+
+#### Execution Sequencing
+When multiple commands are required:
+
+1. Execute the first command
+2. Wait for completion
+3. Verify exit code is 0
+4. Only then execute the next command
+
+If any command fails:
+- Stop the sequence immediately
+- Report the failure
+- Diagnose the issue
+- Do not attempt subsequent commands
+
+#### Git Workflow Pattern
+For Git operations, always use this strict sequence:
+
+```bash
+# Step 1: Stage files
+git add <files>
+
+# Verify staging succeeded before proceeding
+
+# Step 2: Commit (separate execution)
+git commit -m "commit message"
+
+# Verify commit succeeded before proceeding
+
+# Step 3: Push (separate execution, only if requested)
+git push
+```
+
+Never combine these operations.
+
 ### Refactoring Rules
 
 - Prefer modifying existing working code over rewriting working code.
