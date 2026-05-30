@@ -97,25 +97,37 @@ git push
 Never combine these operations.
 
 #### GitHub CLI (`gh`) Execution
-For GitHub CLI operations:
+**WARNING: `gh` CLI commands can cause VS Code window crashes (Exit Code 5).**
+
+Prefer web-based GitHub configuration over `gh` CLI when possible.
+
+**Safer Alternative Pattern:**
+```bash
+# Instead of: gh api ...
+# Do this:
+# 1. Create config files locally
+# 2. Commit and push
+# 3. Configure via GitHub web UI
+```
+
+If `gh` commands are required:
 
 - Execute `gh` commands individually, never chained with other operations
 - Verify authentication status before API operations
 - Use non-interactive mode where possible to avoid hanging prompts
 - Add explicit timeouts for long-running API calls
 - Wait for complete output before proceeding
+- **Close unused terminal panes** before running `gh` commands
 
-Example safe pattern:
-```bash
-# Step 1: Check authentication
-gh auth status
+Known stable operations:
+- File creation and Git operations
+- Reading files
+- Standard shell commands
 
-# Step 2: Execute API operation (separate execution)
-gh repo view
-
-# Step 3: Configure Pages (separate execution)
-gh api ...
-```
+Known crash-prone operations:
+- `gh` API calls
+- `gh` authentication flows
+- Multiple simultaneous `gh` commands
 
 #### VS Code Stability Precautions
 To prevent window crashes and interruptions:
