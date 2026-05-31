@@ -199,20 +199,54 @@
         }
 
         /* Drill-down feature styles */
-        .info-btn, .explore-btn {
+        .drill-down-btn {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             color: #64748b;
             transition: all 0.2s;
-            padding: 2px 4px;
-            opacity: 0.7;
+            padding: 4px 6px;
+            opacity: 0.6;
+            margin-left: 8px;
         }
 
-        .info-btn:hover, .explore-btn:hover {
+        .drill-down-btn:hover {
             opacity: 1;
-            transform: scale(1.1);
+            transform: scale(1.15);
+            color: #94a3b8;
+        }
+
+        .sort-toggle {
+            display: flex;
+            gap: 8px;
+            background: rgba(71, 85, 105, 0.2);
+            padding: 4px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .sort-toggle button {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sort-toggle button.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .sort-toggle button:hover:not(.active) {
+            background: rgba(71, 85, 105, 0.3);
+            color: #cbd5e1;
         }
 
         .modal-overlay {
@@ -526,8 +560,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-purple-300">RANKED POPULATION</h3>
-                            <button class="info-btn" onclick="window.popExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
-                            <button class="explore-btn" onclick="window.popExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
+                            <button class="drill-down-btn" onclick="window.popExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by number of players</p>
                         <canvas id="chart1" class="mb-2 ranking-chart"></canvas>
@@ -565,8 +598,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-pink-400">AVERAGE LEVEL</h3>
-                            <button class="info-btn" onclick="window.levelExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
-                            <button class="explore-btn" onclick="window.levelExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
+                            <button class="drill-down-btn" onclick="window.levelExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average player level</p>
                         <canvas id="chart2" class="mb-2 ranking-chart"></canvas>
@@ -604,8 +636,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-blue-300">TOTAL SERVER POWER (TRILLIONS)</h3>
-                            <button class="info-btn" onclick="window.powerExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
-                            <button class="explore-btn" onclick="window.powerExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
+                            <button class="drill-down-btn" onclick="window.powerExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by total power</p>
                         <canvas id="chart3" class="mb-2 ranking-chart"></canvas>
@@ -671,8 +702,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-orange-400">AVERAGE POWER PER PLAYER (MILLIONS)</h3>
-                            <button class="info-btn" onclick="window.avgPowerExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
-                            <button class="explore-btn" onclick="window.avgPowerExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
+                            <button class="drill-down-btn" onclick="window.avgPowerExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average power per player</p>
                         <canvas id="chart6" class="mb-2 ranking-chart"></canvas>
@@ -723,8 +753,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-amber-400">INCURSION WIN RATE (%) RANKING</h3>
-                            <button class="info-btn" onclick="window.incursionExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
-                            <button class="explore-btn" onclick="window.incursionExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
+                            <button class="drill-down-btn" onclick="window.incursionExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by incursion win rate</p>
                         <canvas id="chart8" class="mb-2 ranking-chart"></canvas>
