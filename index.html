@@ -199,61 +199,20 @@
         }
 
         /* Drill-down feature styles */
-        .overflow-btn {
-            background: rgba(71, 85, 105, 0.3);
-            border: 1px solid rgba(71, 85, 105, 0.4);
-            border-radius: 4px;
-            padding: 4px 8px;
+        .info-btn, .explore-btn {
+            background: none;
+            border: none;
             cursor: pointer;
             font-size: 16px;
-            color: #94a3b8;
+            color: #64748b;
             transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 28px;
-            min-height: 28px;
+            padding: 2px 4px;
+            opacity: 0.7;
         }
 
-        .overflow-btn:hover {
-            background: rgba(71, 85, 105, 0.5);
-            color: #e2e8f0;
-        }
-
-        .overflow-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 4px;
-            background: rgba(15, 23, 42, 0.98);
-            border: 1px solid rgba(71, 85, 105, 0.6);
-            border-radius: 6px;
-            padding: 4px;
-            min-width: 180px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            display: none;
-        }
-
-        .overflow-menu.show {
-            display: block;
-        }
-
-        .overflow-menu-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #cbd5e1;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .overflow-menu-item:hover {
-            background: rgba(71, 85, 105, 0.4);
-            color: #f1f5f9;
+        .info-btn:hover, .explore-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         .modal-overlay {
@@ -567,14 +526,8 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-purple-300">RANKED POPULATION</h3>
-                            <div style="position: relative;">
-                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-pop')">⋮</button>
-                                <div id="menu-pop" class="overflow-menu">
-                                    <div class="overflow-menu-item" onclick="window.popExplorer?.showDistribution(); toggleOverflowMenu('menu-pop')">📊 View Distribution</div>
-                                    <div class="overflow-menu-item" onclick="window.popExplorer?.showFullRankings(); toggleOverflowMenu('menu-pop')">📋 Full Rankings</div>
-                                    <div class="overflow-menu-item" onclick="window.popExplorer?.exportCSV(); toggleOverflowMenu('menu-pop')">📥 Export CSV</div>
-                                </div>
-                            </div>
+                            <button class="info-btn" onclick="window.popExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
+                            <button class="explore-btn" onclick="window.popExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by number of players</p>
                         <canvas id="chart1" class="mb-2 ranking-chart"></canvas>
@@ -612,14 +565,8 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-pink-400">AVERAGE LEVEL</h3>
-                            <div style="position: relative;">
-                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-level')">⋮</button>
-                                <div id="menu-level" class="overflow-menu">
-                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.showDistribution(); toggleOverflowMenu('menu-level')">📊 View Distribution</div>
-                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.showFullRankings(); toggleOverflowMenu('menu-level')">📋 Full Rankings</div>
-                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.exportCSV(); toggleOverflowMenu('menu-level')">📥 Export CSV</div>
-                                </div>
-                            </div>
+                            <button class="info-btn" onclick="window.levelExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
+                            <button class="explore-btn" onclick="window.levelExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average player level</p>
                         <canvas id="chart2" class="mb-2 ranking-chart"></canvas>
@@ -657,14 +604,8 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-blue-300">TOTAL SERVER POWER (TRILLIONS)</h3>
-                            <div style="position: relative;">
-                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-power')">⋮</button>
-                                <div id="menu-power" class="overflow-menu">
-                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.showDistribution(); toggleOverflowMenu('menu-power')">📊 View Distribution</div>
-                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.showFullRankings(); toggleOverflowMenu('menu-power')">📋 Full Rankings</div>
-                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.exportCSV(); toggleOverflowMenu('menu-power')">📥 Export CSV</div>
-                                </div>
-                            </div>
+                            <button class="info-btn" onclick="window.powerExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
+                            <button class="explore-btn" onclick="window.powerExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by total power</p>
                         <canvas id="chart3" class="mb-2 ranking-chart"></canvas>
@@ -730,14 +671,8 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-orange-400">AVERAGE POWER PER PLAYER (MILLIONS)</h3>
-                            <div style="position: relative;">
-                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-avgpower')">⋮</button>
-                                <div id="menu-avgpower" class="overflow-menu">
-                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.showDistribution(); toggleOverflowMenu('menu-avgpower')">📊 View Distribution</div>
-                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.showFullRankings(); toggleOverflowMenu('menu-avgpower')">📋 Full Rankings</div>
-                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.exportCSV(); toggleOverflowMenu('menu-avgpower')">📥 Export CSV</div>
-                                </div>
-                            </div>
+                            <button class="info-btn" onclick="window.avgPowerExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
+                            <button class="explore-btn" onclick="window.avgPowerExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average power per player</p>
                         <canvas id="chart6" class="mb-2 ranking-chart"></canvas>
@@ -788,14 +723,8 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-amber-400">INCURSION WIN RATE (%) RANKING</h3>
-                            <div style="position: relative;">
-                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-incursion')">⋮</button>
-                                <div id="menu-incursion" class="overflow-menu">
-                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.showDistribution(); toggleOverflowMenu('menu-incursion')">📊 View Distribution</div>
-                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.showFullRankings(); toggleOverflowMenu('menu-incursion')">📋 Full Rankings</div>
-                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.exportCSV(); toggleOverflowMenu('menu-incursion')">📥 Export CSV</div>
-                                </div>
-                            </div>
+                            <button class="info-btn" onclick="window.incursionExplorer?.showSummary()" title="Distribution Summary">ⓘ</button>
+                            <button class="explore-btn" onclick="window.incursionExplorer?.showFullExplorer()" title="Full Distribution Explorer">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by incursion win rate</p>
                         <canvas id="chart8" class="mb-2 ranking-chart"></canvas>
@@ -1169,28 +1098,8 @@
                 };
             }
 
-            createHistogram() {
+createHistogram(numBins = 15) {
                 const values = this.data.map(d => d[this.metricKey]);
-
-                // Adaptive binning: use log scale for highly skewed data
-                const max = Math.max(...values);
-                const min = Math.min(...values);
-                const range = max - min;
-                const skewness = (max / (min + 1)); // Rough skew indicator
-
-                let bins;
-                if (skewness > 5) {
-                    // Log-scale binning for skewed data (e.g., power metrics)
-                    bins = this.createLogBins(values, 15);
-                } else {
-                    // Linear binning for normal distributions
-                    bins = this.createLinearBins(values, 15);
-                }
-
-                return bins;
-            }
-
-            createLinearBins(values, numBins) {
                 const min = Math.min(...values);
                 const max = Math.max(...values);
                 const binSize = (max - min) / numBins;
@@ -1209,105 +1118,76 @@
                 return { bins, binEdges };
             }
 
-            createLogBins(values, numBins) {
-                const min = Math.min(...values);
-                const max = Math.max(...values);
-                const logMin = Math.log10(min + 1);
-                const logMax = Math.log10(max + 1);
-                const logBinSize = (logMax - logMin) / numBins;
-                const bins = Array(numBins).fill(0);
-                const binEdges = [];
-
-                for (let i = 0; i <= numBins; i++) {
-                    binEdges.push(Math.pow(10, logMin + i * logBinSize) - 1);
-                }
-
-                values.forEach(v => {
-                    const logV = Math.log10(v + 1);
-                    const binIndex = Math.min(Math.floor((logV - logMin) / logBinSize), numBins - 1);
-                    bins[binIndex]++;
-                });
-
-                return { bins, binEdges };
-            }
-
-            showDistribution() {
+            showSummary() {
                 const modal = document.getElementById('distributionModal');
                 const title = document.getElementById('distModalTitle');
                 const content = document.getElementById('distModalContent');
 
-                title.textContent = `${this.metricName} Distribution`;
+                title.textContent = `${this.metricName} - Quick Stats`;
                 title.style.color = this.accentColor;
 
                 const html = `
-                    <div class="stat-grid">
-                        <div class="stat-item">
-                            <div class="stat-label">Total Servers</div>
-                            <div class="stat-value">${this.stats.total}</div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 11px; color: #64748b; margin-bottom: 8px; font-weight: 600;">ALL SERVERS</div>
+                            <div style="display: grid; gap: 8px;">
+                                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
+                                    <span style="color: #94a3b8; font-size: 12px;">Lowest</span>
+                                    <span style="color: #f1f5f9; font-size: 12px; font-weight: 600;">${this.formatter(this.stats.min)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
+                                    <span style="color: #94a3b8; font-size: 12px;">Bottom 25%</span>
+                                    <span style="color: #f1f5f9; font-size: 12px; font-weight: 600;">${this.formatter(this.stats.p25)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
+                                    <span style="color: #94a3b8; font-size: 12px;">Median</span>
+                                    <span style="color: #f1f5f9; font-size: 12px; font-weight: 600;">${this.formatter(this.stats.median)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
+                                    <span style="color: #94a3b8; font-size: 12px;">Top 25%</span>
+                                    <span style="color: #f1f5f9; font-size: 12px; font-weight: 600;">${this.formatter(this.stats.p75)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 4px 0;">
+                                    <span style="color: #94a3b8; font-size: 12px;">Highest</span>
+                                    <span style="color: #f1f5f9; font-size: 12px; font-weight: 600;">${this.formatter(this.stats.max)}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Min</div>
-                            <div class="stat-value">${this.formatter(this.stats.min)}</div>
+
+                        ${this.server63 ? `
+                        <div style="flex: 1; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 12px;">
+                            <div style="font-size: 11px; color: #fbbf24; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">SERVER 63</div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-size: 24px; font-weight: 700; color: #fbbf24; font-family: 'Orbitron', monospace;">${this.formatter(this.stats.server63Value)}</div>
+                            </div>
+                            <div style="display: grid; gap: 6px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #cbd5e1; font-size: 11px;">Rank</span>
+                                    <span style="color: #fbbf24; font-size: 11px; font-weight: 600;">#${this.stats.rank} of ${this.stats.total}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #cbd5e1; font-size: 11px;">Position</span>
+                                    <span style="color: #fbbf24; font-size: 11px; font-weight: 600;">${this.stats.percentile}th percentile</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label">25th Percentile</div>
-                            <div class="stat-value">${this.formatter(this.stats.p25)}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Median</div>
-                            <div class="stat-value">${this.formatter(this.stats.median)}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">75th Percentile</div>
-                            <div class="stat-value">${this.formatter(this.stats.p75)}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Max</div>
-                            <div class="stat-value">${this.formatter(this.stats.max)}</div>
-                        </div>
+                        ` : ''}
                     </div>
 
-                    ${this.server63 ? `
-                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 16px; margin: 16px 0;">
-                        <div class="orbitron font-bold text-amber-300 mb-2">SERVER 63</div>
-                        <div class="stat-grid">
-                            <div class="stat-item" style="background: rgba(251, 191, 36, 0.15);">
-                                <div class="stat-label">Value</div>
-                                <div class="stat-value" style="color: #fbbf24;">${this.formatter(this.stats.server63Value)}</div>
-                            </div>
-                            <div class="stat-item" style="background: rgba(251, 191, 36, 0.15);">
-                                <div class="stat-label">Rank</div>
-                                <div class="stat-value" style="color: #fbbf24;">#${this.stats.rank}</div>
-                            </div>
-                        </div>
-                        <div class="percentile-gauge">
-                            <div class="gauge-label" style="left: ${this.stats.percentile}%;">${this.stats.percentile}th</div>
-                            <div class="gauge-bar">
-                                <div class="gauge-fill" style="width: ${this.stats.percentile}%; background: linear-gradient(90deg, ${this.accentColor}33, ${this.accentColor});"></div>
-                                <div class="gauge-marker" style="left: ${this.stats.percentile}%;"></div>
-                            </div>
-                        </div>
-                        <div style="font-size: 11px; color: #94a3b8; margin-top: 12px;">
-                            Higher than ${this.stats.percentile}% of US servers
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <div style="margin-top: 20px;">
-                        <div class="orbitron font-semibold text-sm" style="color: ${this.accentColor}; margin-bottom: 12px;">Distribution Histogram</div>
-                        <canvas id="distHistogram" style="max-height: 200px;"></canvas>
+                    <div style="margin-top: 16px;">
+                        <div style="font-size: 11px; color: #64748b; margin-bottom: 10px; font-weight: 600;">WHERE SERVERS FALL</div>
+                        <canvas id="distHistogram" style="max-height: 160px;"></canvas>
                     </div>
                 `;
 
                 content.innerHTML = html;
                 modal.classList.add('show');
 
-                // Render histogram
-                setTimeout(() => this.renderHistogram(), 50);
+                setTimeout(() => this.renderSummaryHistogram(), 50);
             }
 
-            renderHistogram() {
-                const { bins, binEdges } = this.createHistogram();
+renderSummaryHistogram() {
+                const { bins, binEdges } = this.createHistogram(12);
                 const labels = binEdges.slice(0, -1).map((edge, i) => {
                     const nextEdge = binEdges[i + 1];
                     return `${this.formatter(edge)}-${this.formatter(nextEdge)}`;
@@ -1326,7 +1206,7 @@
                     data: {
                         labels,
                         datasets: [{
-                            label: 'Server Count',
+                            label: 'Servers',
                             data: bins,
                             backgroundColor: backgroundColors,
                             borderColor: this.accentColor,
@@ -1346,36 +1226,139 @@
                         },
                         scales: {
                             x: {
-                                ticks: {
-                                    color: '#94a3b8',
-                                    font: { size: 9 },
+                                ticks: { 
+                                    color: '#94a3b8', 
+                                    font: { size: 8 },
                                     maxRotation: 45,
                                     minRotation: 45
-                                }
+                                },
+                                grid: { display: false }
                             },
                             y: {
-                                ticks: { color: '#94a3b8', font: { size: 10 } },
-                                title: { display: true, text: 'Servers', color: '#94a3b8' }
+                                ticks: { color: '#94a3b8', font: { size: 9 } },
+                                title: { display: true, text: 'Servers', color: '#94a3b8', font: { size: 10 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' }
                             }
                         }
                     }
                 });
             }
 
-            showFullRankings() {
+            renderExplorerHistogram() {
+                const { bins, binEdges } = this.createHistogram(20);
+                const labels = binEdges.slice(0, -1).map((edge, i) => {
+                    const nextEdge = binEdges[i + 1];
+                    return `${this.formatter(edge)} - ${this.formatter(nextEdge)}`;
+                });
+
+                const server63Value = this.stats.server63Value;
+                const medianValue = this.stats.median;
+
+                new Chart(document.getElementById('explorerHistogram'), {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Number of Servers',
+                            data: bins,
+                            backgroundColor: `${this.accentColor}99`,
+                            borderColor: this.accentColor,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.raw} servers in this range`
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    server63Line: {
+                                        type: 'line',
+                                        xMin: server63Value,
+                                        xMax: server63Value,
+                                        borderColor: '#fbbf24',
+                                        borderWidth: 3,
+                                        label: {
+                                            display: true,
+                                            content: 'Server 63',
+                                            position: 'start',
+                                            backgroundColor: '#fbbf24',
+                                            color: '#000',
+                                            font: { size: 11, weight: 'bold' }
+                                        }
+                                    },
+                                    medianLine: {
+                                        type: 'line',
+                                        xMin: medianValue,
+                                        xMax: medianValue,
+                                        borderColor: '#64748b',
+                                        borderWidth: 2,
+                                        borderDash: [5, 5],
+                                        label: {
+                                            display: true,
+                                            content: 'Median',
+                                            position: 'end',
+                                            backgroundColor: '#64748b',
+                                            color: '#fff',
+                                            font: { size: 10 }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { 
+                                    color: '#94a3b8', 
+                                    font: { size: 9 },
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                },
+                                title: {
+                                    display: true,
+                                    text: this.metricName,
+                                    color: this.accentColor,
+                                    font: { size: 12, weight: 'bold' }
+                                }
+                            },
+                            y: {
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                title: { display: true, text: 'Number of Servers', color: '#94a3b8', font: { size: 11 } },
+                                grid: { color: 'rgba(71, 85, 105, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            showFullExplorer() {
                 const modal = document.getElementById('rankingsModal');
                 const title = document.getElementById('rankModalTitle');
                 const content = document.getElementById('rankModalContent');
 
-                title.textContent = `${this.metricName} - Full Rankings`;
+                title.textContent = `${this.metricName} - Full Explorer`;
                 title.style.color = this.accentColor;
 
                 const server63Index = this.sortedData.findIndex(s => s.serverid === 63);
-                const neighbors = this.getNeighbors(server63Index, 5);
 
                 const html = `
+                    <!-- Histogram Section -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-size: 11px; color: #64748b; margin-bottom: 12px; font-weight: 600; text-transform: uppercase;">Distribution Across All Servers</div>
+                        <div style="background: rgba(30, 41, 59, 0.5); border-radius: 8px; padding: 16px;">
+                            <canvas id="explorerHistogram" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar -->
                     <div class="toolbar">
-                        <input type="text" class="search-box" placeholder="Search server..." id="rankSearchBox" style="flex: 1;">
+                        <input type="text" class="search-box" placeholder="Search by server name or ID..." id="rankSearchBox" style="flex: 1;">
                         <select class="jump-select" id="jumpSelect">
                             <option value="">Jump to Server...</option>
                             ${this.sortedData.map((s, i) => `
@@ -1384,54 +1367,35 @@
                                 </option>
                             `).join('')}
                         </select>
-                        <button class="btn" onclick="window.currentExplorer.toggleSort()">↕ Sort</button>
-                        <button class="btn" onclick="window.currentExplorer.exportCSV()">📥 Export CSV</button>
+                        <button class="btn" onclick="window.currentExplorer.toggleSort()">↕ Flip Order</button>
                     </div>
 
-                    ${this.server63 && neighbors.length > 0 ? `
-                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
-                        <div class="orbitron font-semibold text-sm text-amber-300 mb-2">Context: Servers Near US 63</div>
-                        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Showing ±${Math.floor(neighbors.length / 2)} servers around Server 63</div>
-                        <div style="max-height: 200px; overflow-y: auto;">
-                            <table class="rankings-table">
-                                <thead>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>Server</th>
-                                        <th>${this.metricName}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${neighbors.map(s => `
-                                        <tr class="${s.serverid === 63 ? 'highlight' : ''}">
-                                            <td>#${s.rank}</td>
-                                            <td>US ${s.serverid} (${s.name})</td>
-                                            <td>${this.formatter(s[this.metricKey])}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <div style="max-height: 500px; overflow-y: auto;">
+                    <!-- Full Rankings Table -->
+                    <div style="max-height: 500px; overflow-y: auto; margin-top: 16px;">
                         <table class="rankings-table" id="rankingsTable">
                             <thead>
                                 <tr>
-                                    <th>Rank</th>
+                                    <th style="width: 60px;">Rank</th>
                                     <th>Server</th>
-                                    <th>${this.metricName}</th>
+                                    <th style="width: 120px;">${this.metricName}</th>
+                                    <th style="width: 100px;">Position</th>
                                 </tr>
                             </thead>
                             <tbody id="rankingsTableBody">
-                                ${this.sortedData.map((s, i) => `
-                                    <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
-                                        <td>#${i + 1}</td>
-                                        <td>US ${s.serverid} (${s.name})</td>
-                                        <td>${this.formatter(s[this.metricKey])}</td>
-                                    </tr>
-                                `).join('')}
+                                ${this.sortedData.map((s, i) => {
+                                    const percentile = Math.round((i / (this.sortedData.length - 1)) * 100);
+                                    const position = percentile < 25 ? 'Bottom 25%' : 
+                                                    percentile > 75 ? 'Top 25%' : 
+                                                    'Middle 50%';
+                                    return `
+                                        <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
+                                            <td>#${i + 1}</td>
+                                            <td>US ${s.serverid} (${s.name})</td>
+                                            <td>${this.formatter(s[this.metricKey])}</td>
+                                            <td style="font-size: 11px; color: #94a3b8;">${position}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -1440,7 +1404,10 @@
                 content.innerHTML = html;
                 modal.classList.add('show');
 
-                // Setup search
+                // Render histogram
+                setTimeout(() => this.renderExplorerHistogram(), 50);
+
+                // Setup search and navigation
                 document.getElementById('rankSearchBox').addEventListener('input', (e) => this.filterRankings(e.target.value));
                 document.getElementById('jumpSelect').addEventListener('change', (e) => this.jumpToRank(parseInt(e.target.value)));
 
@@ -1487,51 +1454,23 @@
             toggleSort() {
                 this.sortedData.reverse();
                 const tbody = document.getElementById('rankingsTableBody');
-                tbody.innerHTML = this.sortedData.map((s, i) => `
-                    <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
-                        <td>#${i + 1}</td>
-                        <td>US ${s.serverid} (${s.name})</td>
-                        <td>${this.formatter(s[this.metricKey])}</td>
-                    </tr>
-                `).join('');
+                tbody.innerHTML = this.sortedData.map((s, i) => {
+                    const percentile = Math.round((i / (this.sortedData.length - 1)) * 100);
+                    const position = percentile < 25 ? 'Bottom 25%' : 
+                                    percentile > 75 ? 'Top 25%' : 
+                                    'Middle 50%';
+                    return `
+                        <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
+                            <td>#${i + 1}</td>
+                            <td>US ${s.serverid} (${s.name})</td>
+                            <td>${this.formatter(s[this.metricKey])}</td>
+                            <td style="font-size: 11px; color: #94a3b8;">${position}</td>
+                        </tr>
+                    `;
+                }).join('');
             }
 
-            exportCSV() {
-                const headers = ['Rank', 'Server ID', 'Server Name', this.metricName];
-                const rows = this.sortedData.map((s, i) => [
-                    i + 1,
-                    s.serverid,
-                    s.name,
-                    s[this.metricKey]
-                ]);
-
-                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `stfc_${this.metricKey}_rankings.csv`;
-                a.click();
-                URL.revokeObjectURL(url);
-            }
         }
-
-        // Overflow menu toggle
-        function toggleOverflowMenu(menuId) {
-            const menu = document.getElementById(menuId);
-            const allMenus = document.querySelectorAll('.overflow-menu');
-            allMenus.forEach(m => {
-                if (m.id !== menuId) m.classList.remove('show');
-            });
-            menu.classList.toggle('show');
-        }
-
-        // Close menus on outside click
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.overflow-btn') && !e.target.closest('.overflow-menu')) {
-                document.querySelectorAll('.overflow-menu').forEach(m => m.classList.remove('show'));
-            }
-        });
 
         // Modal control functions
         function closeDistributionModal() {
