@@ -197,6 +197,326 @@
                 min-height: 44px;
             }
         }
+
+        /* Drill-down feature styles */
+        .overflow-btn {
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #94a3b8;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            min-height: 28px;
+        }
+
+        .overflow-btn:hover {
+            background: rgba(71, 85, 105, 0.5);
+            color: #e2e8f0;
+        }
+
+        .overflow-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(71, 85, 105, 0.6);
+            border-radius: 6px;
+            padding: 4px;
+            min-width: 180px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .overflow-menu.show {
+            display: block;
+        }
+
+        .overflow-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #cbd5e1;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overflow-menu-item:hover {
+            background: rgba(71, 85, 105, 0.4);
+            color: #f1f5f9;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 14, 26, 0.98));
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-content.large {
+            max-width: 900px;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(71, 85, 105, 0.4);
+            color: #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .percentile-badge {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-top: 2px;
+        }
+
+        .percentile-gauge {
+            height: 60px;
+            position: relative;
+            margin: 16px 0;
+        }
+
+        .gauge-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 4px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .gauge-marker {
+            position: absolute;
+            top: -4px;
+            width: 16px;
+            height: 16px;
+            background: #fbbf24;
+            border-radius: 50%;
+            border: 2px solid #0a0e1a;
+            transform: translateX(-50%);
+        }
+
+        .gauge-label {
+            position: absolute;
+            top: -24px;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #fbbf24;
+            white-space: nowrap;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .stat-item {
+            background: rgba(71, 85, 105, 0.2);
+            padding: 10px 12px;
+            border-radius: 6px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-top: 4px;
+        }
+
+        .rankings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .rankings-table thead {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.98);
+            z-index: 10;
+        }
+
+        .rankings-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+        }
+
+        .rankings-table td {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+        }
+
+        .rankings-table tr.highlight {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .rankings-table tr.highlight td {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(71, 85, 105, 0.2);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 6px;
+            color: #f1f5f9;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(251, 191, 36, 0.5);
+            background: rgba(71, 85, 105, 0.3);
+        }
+
+        .jump-select {
+            padding: 8px 12px;
+            background: rgba(71, 85, 105, 0.2);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 6px;
+            color: #f1f5f9;
+            font-size: 13px;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .jump-select:focus {
+            outline: none;
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(71, 85, 105, 0.5);
+            color: #f1f5f9;
+        }
+
+        @media (max-width: 767px) {
+            .modal-content {
+                max-width: 100%;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .modal-overlay {
+                padding: 0;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body class="p-3 md:p-6">
@@ -762,6 +1082,411 @@
 
             document.getElementById('server63-metrics').innerHTML = metricsHTML;
         }
+
+        // Metric Distribution Explorer Class
+        class MetricDistributionExplorer {
+            constructor(data, metricName, metricKey, formatter, accentColor) {
+                this.data = data;
+                this.metricName = metricName;
+                this.metricKey = metricKey;
+                this.formatter = formatter;
+                this.accentColor = accentColor;
+                this.server63 = data.find(s => s.serverid === 63);
+                this.sortedData = [...data].sort((a, b) => b[metricKey] - a[metricKey]);
+                this.stats = this.calculateStats();
+            }
+
+            calculateStats() {
+                const values = this.data.map(d => d[this.metricKey]).sort((a, b) => a - b);
+                const n = values.length;
+                const server63Value = this.server63 ? this.server63[this.metricKey] : null;
+                const rank = this.sortedData.findIndex(s => s.serverid === 63) + 1;
+                const percentile = server63Value !== null ? Math.round((values.filter(v => v < server63Value).length / n) * 100) : null;
+
+                return {
+                    min: values[0],
+                    p25: values[Math.floor(n * 0.25)],
+                    median: values[Math.floor(n * 0.5)],
+                    p75: values[Math.floor(n * 0.75)],
+                    max: values[n - 1],
+                    server63Value,
+                    rank,
+                    percentile,
+                    total: n
+                };
+            }
+
+            createHistogram() {
+                const values = this.data.map(d => d[this.metricKey]);
+                
+                // Adaptive binning: use log scale for highly skewed data
+                const max = Math.max(...values);
+                const min = Math.min(...values);
+                const range = max - min;
+                const skewness = (max / (min + 1)); // Rough skew indicator
+                
+                let bins;
+                if (skewness > 5) {
+                    // Log-scale binning for skewed data (e.g., power metrics)
+                    bins = this.createLogBins(values, 15);
+                } else {
+                    // Linear binning for normal distributions
+                    bins = this.createLinearBins(values, 15);
+                }
+
+                return bins;
+            }
+
+            createLinearBins(values, numBins) {
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+                const binSize = (max - min) / numBins;
+                const bins = Array(numBins).fill(0);
+                const binEdges = [];
+
+                for (let i = 0; i <= numBins; i++) {
+                    binEdges.push(min + i * binSize);
+                }
+
+                values.forEach(v => {
+                    const binIndex = Math.min(Math.floor((v - min) / binSize), numBins - 1);
+                    bins[binIndex]++;
+                });
+
+                return { bins, binEdges };
+            }
+
+            createLogBins(values, numBins) {
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+                const logMin = Math.log10(min + 1);
+                const logMax = Math.log10(max + 1);
+                const logBinSize = (logMax - logMin) / numBins;
+                const bins = Array(numBins).fill(0);
+                const binEdges = [];
+
+                for (let i = 0; i <= numBins; i++) {
+                    binEdges.push(Math.pow(10, logMin + i * logBinSize) - 1);
+                }
+
+                values.forEach(v => {
+                    const logV = Math.log10(v + 1);
+                    const binIndex = Math.min(Math.floor((logV - logMin) / logBinSize), numBins - 1);
+                    bins[binIndex]++;
+                });
+
+                return { bins, binEdges };
+            }
+
+            showDistribution() {
+                const modal = document.getElementById('distributionModal');
+                const title = document.getElementById('distModalTitle');
+                const content = document.getElementById('distModalContent');
+
+                title.textContent = `${this.metricName} Distribution`;
+                title.style.color = this.accentColor;
+
+                const html = `
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Servers</div>
+                            <div class="stat-value">${this.stats.total}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Min</div>
+                            <div class="stat-value">${this.formatter(this.stats.min)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">25th Percentile</div>
+                            <div class="stat-value">${this.formatter(this.stats.p25)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Median</div>
+                            <div class="stat-value">${this.formatter(this.stats.median)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">75th Percentile</div>
+                            <div class="stat-value">${this.formatter(this.stats.p75)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Max</div>
+                            <div class="stat-value">${this.formatter(this.stats.max)}</div>
+                        </div>
+                    </div>
+
+                    ${this.server63 ? `
+                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 16px; margin: 16px 0;">
+                        <div class="orbitron font-bold text-amber-300 mb-2">SERVER 63</div>
+                        <div class="stat-grid">
+                            <div class="stat-item" style="background: rgba(251, 191, 36, 0.15);">
+                                <div class="stat-label">Value</div>
+                                <div class="stat-value" style="color: #fbbf24;">${this.formatter(this.stats.server63Value)}</div>
+                            </div>
+                            <div class="stat-item" style="background: rgba(251, 191, 36, 0.15);">
+                                <div class="stat-label">Rank</div>
+                                <div class="stat-value" style="color: #fbbf24;">#${this.stats.rank}</div>
+                            </div>
+                        </div>
+                        <div class="percentile-gauge">
+                            <div class="gauge-label" style="left: ${this.stats.percentile}%;">${this.stats.percentile}th</div>
+                            <div class="gauge-bar">
+                                <div class="gauge-fill" style="width: ${this.stats.percentile}%; background: linear-gradient(90deg, ${this.accentColor}33, ${this.accentColor});"></div>
+                                <div class="gauge-marker" style="left: ${this.stats.percentile}%;"></div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #94a3b8; margin-top: 12px;">
+                            Higher than ${this.stats.percentile}% of US servers
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div style="margin-top: 20px;">
+                        <div class="orbitron font-semibold text-sm" style="color: ${this.accentColor}; margin-bottom: 12px;">Distribution Histogram</div>
+                        <canvas id="distHistogram" style="max-height: 200px;"></canvas>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+                modal.classList.add('show');
+
+                // Render histogram
+                setTimeout(() => this.renderHistogram(), 50);
+            }
+
+            renderHistogram() {
+                const { bins, binEdges } = this.createHistogram();
+                const labels = binEdges.slice(0, -1).map((edge, i) => {
+                    const nextEdge = binEdges[i + 1];
+                    return `${this.formatter(edge)}-${this.formatter(nextEdge)}`;
+                });
+
+                const server63Value = this.stats.server63Value;
+                const server63BinIndex = binEdges.findIndex((edge, i) => {
+                    if (i === binEdges.length - 1) return false;
+                    return server63Value >= edge && server63Value < binEdges[i + 1];
+                });
+
+                const backgroundColors = bins.map((_, i) => i === server63BinIndex ? this.accentColor : `${this.accentColor}66`);
+
+                new Chart(document.getElementById('distHistogram'), {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Server Count',
+                            data: bins,
+                            backgroundColor: backgroundColors,
+                            borderColor: this.accentColor,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.raw} servers`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { 
+                                    color: '#94a3b8', 
+                                    font: { size: 9 },
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                title: { display: true, text: 'Servers', color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            showFullRankings() {
+                const modal = document.getElementById('rankingsModal');
+                const title = document.getElementById('rankModalTitle');
+                const content = document.getElementById('rankModalContent');
+
+                title.textContent = `${this.metricName} - Full Rankings`;
+                title.style.color = this.accentColor;
+
+                const server63Index = this.sortedData.findIndex(s => s.serverid === 63);
+                const neighbors = this.getNeighbors(server63Index, 5);
+
+                const html = `
+                    <div class="toolbar">
+                        <input type="text" class="search-box" placeholder="Search server..." id="rankSearchBox" style="flex: 1;">
+                        <select class="jump-select" id="jumpSelect">
+                            <option value="">Jump to Server...</option>
+                            ${this.sortedData.map((s, i) => `
+                                <option value="${i}" ${s.serverid === 63 ? 'selected' : ''}>
+                                    #${i + 1} - US ${s.serverid} (${s.name})
+                                </option>
+                            `).join('')}
+                        </select>
+                        <button class="btn" onclick="window.currentExplorer.toggleSort()">↕ Sort</button>
+                        <button class="btn" onclick="window.currentExplorer.exportCSV()">📥 Export CSV</button>
+                    </div>
+
+                    ${this.server63 && neighbors.length > 0 ? `
+                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                        <div class="orbitron font-semibold text-sm text-amber-300 mb-2">Context: Servers Near US 63</div>
+                        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Showing ±${Math.floor(neighbors.length / 2)} servers around Server 63</div>
+                        <div style="max-height: 200px; overflow-y: auto;">
+                            <table class="rankings-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Server</th>
+                                        <th>${this.metricName}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${neighbors.map(s => `
+                                        <tr class="${s.serverid === 63 ? 'highlight' : ''}">
+                                            <td>#${s.rank}</td>
+                                            <td>US ${s.serverid} (${s.name})</td>
+                                            <td>${this.formatter(s[this.metricKey])}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="rankings-table" id="rankingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Server</th>
+                                    <th>${this.metricName}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rankingsTableBody">
+                                ${this.sortedData.map((s, i) => `
+                                    <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
+                                        <td>#${i + 1}</td>
+                                        <td>US ${s.serverid} (${s.name})</td>
+                                        <td>${this.formatter(s[this.metricKey])}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+                modal.classList.add('show');
+
+                // Setup search
+                document.getElementById('rankSearchBox').addEventListener('input', (e) => this.filterRankings(e.target.value));
+                document.getElementById('jumpSelect').addEventListener('change', (e) => this.jumpToRank(parseInt(e.target.value)));
+
+                window.currentExplorer = this;
+            }
+
+            getNeighbors(centerIndex, range) {
+                if (centerIndex === -1) return [];
+                const start = Math.max(0, centerIndex - range);
+                const end = Math.min(this.sortedData.length - 1, centerIndex + range);
+                return this.sortedData.slice(start, end + 1).map((s, i) => ({
+                    ...s,
+                    rank: start + i + 1
+                }));
+            }
+
+            filterRankings(query) {
+                const tbody = document.getElementById('rankingsTableBody');
+                const rows = tbody.querySelectorAll('tr');
+                const lowerQuery = query.toLowerCase();
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(lowerQuery) ? '' : 'none';
+                });
+            }
+
+            jumpToRank(index) {
+                if (isNaN(index)) return;
+                const row = document.querySelector(`tr[data-rank="${index}"]`);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.style.background = 'rgba(251, 191, 36, 0.2)';
+                    setTimeout(() => {
+                        if (row.classList.contains('highlight')) {
+                            row.style.background = 'rgba(251, 191, 36, 0.15)';
+                        } else {
+                            row.style.background = '';
+                        }
+                    }, 2000);
+                }
+            }
+
+            toggleSort() {
+                this.sortedData.reverse();
+                const tbody = document.getElementById('rankingsTableBody');
+                tbody.innerHTML = this.sortedData.map((s, i) => `
+                    <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
+                        <td>#${i + 1}</td>
+                        <td>US ${s.serverid} (${s.name})</td>
+                        <td>${this.formatter(s[this.metricKey])}</td>
+                    </tr>
+                `).join('');
+            }
+
+            exportCSV() {
+                const headers = ['Rank', 'Server ID', 'Server Name', this.metricName];
+                const rows = this.sortedData.map((s, i) => [
+                    i + 1,
+                    s.serverid,
+                    s.name,
+                    s[this.metricKey]
+                ]);
+
+                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stfc_${this.metricKey}_rankings.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Modal control functions
+        function closeDistributionModal() {
+            document.getElementById('distributionModal').classList.remove('show');
+        }
+
+        function closeRankingsModal() {
+            document.getElementById('rankingsModal').classList.remove('show');
+        }
+
+        // Close on backdrop click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeDistributionModal();
+                closeRankingsModal();
+            }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDistributionModal();
+                closeRankingsModal();
+            }
+        });
 
         // Load data and initialize dashboard
         fetch('data.json')
@@ -1537,5 +2262,32 @@
                 });
         }
     </script>
+
+    <!-- Distribution Modal -->
+    <div id="distributionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="orbitron font-bold text-lg" id="distModalTitle">Distribution</h3>
+                <button class="modal-close" onclick="closeDistributionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="distModalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rankings Modal -->
+    <div id="rankingsModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="orbitron font-bold text-lg" id="rankModalTitle">Full Rankings</h3>
+                <button class="modal-close" onclick="closeRankingsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="rankModalContent"></div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
