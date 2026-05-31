@@ -394,7 +394,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <h3 class="orbitron text-base font-bold text-purple-300">RANKED POPULATION</h3>
-                            <button class="drill-down-btn" onclick="window.popExplorer?.show()" title="View All Servers">📊</button>
+                            <button class="drill-down-btn" onclick="window.populationDistributionExplorer?.show()" title="View All Servers">📊</button>
                         </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by number of players</p>
                         <canvas id="chart1" class="mb-2 ranking-chart"></canvas>
@@ -1101,6 +1101,15 @@
 
                 // Initialize Population Explorer
                 window.popExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Population',
+                    'players',
+                    (val) => formatNum(val),
+                    '#a855f7'
+                );
+
+                // Initialize Population Distribution Explorer (new lollipop chart)
+                window.populationDistributionExplorer = new ServerDistributionExplorer(
                     data,
                     'Population',
                     'players',
