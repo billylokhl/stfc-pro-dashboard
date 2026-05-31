@@ -1226,8 +1226,8 @@ renderSummaryHistogram() {
                         },
                         scales: {
                             x: {
-                                ticks: { 
-                                    color: '#94a3b8', 
+                                ticks: {
+                                    color: '#94a3b8',
                                     font: { size: 8 },
                                     maxRotation: 45,
                                     minRotation: 45
@@ -1314,8 +1314,8 @@ renderSummaryHistogram() {
                         },
                         scales: {
                             x: {
-                                ticks: { 
-                                    color: '#94a3b8', 
+                                ticks: {
+                                    color: '#94a3b8',
                                     font: { size: 9 },
                                     maxRotation: 45,
                                     minRotation: 45
@@ -1383,9 +1383,10 @@ renderSummaryHistogram() {
                             </thead>
                             <tbody id="rankingsTableBody">
                                 ${this.sortedData.map((s, i) => {
-                                    const percentile = Math.round((i / (this.sortedData.length - 1)) * 100);
-                                    const position = percentile < 25 ? 'Bottom 25%' : 
-                                                    percentile > 75 ? 'Top 25%' : 
+                                    // Invert percentile for descending rankings (rank #1 = highest = 100th percentile)
+                                    const percentile = Math.round(((this.sortedData.length - 1 - i) / (this.sortedData.length - 1)) * 100);
+                                    const position = percentile > 75 ? 'Top 25%' :
+                                                    percentile < 25 ? 'Bottom 25%' :
                                                     'Middle 50%';
                                     return `
                                         <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
@@ -1455,9 +1456,10 @@ renderSummaryHistogram() {
                 this.sortedData.reverse();
                 const tbody = document.getElementById('rankingsTableBody');
                 tbody.innerHTML = this.sortedData.map((s, i) => {
-                    const percentile = Math.round((i / (this.sortedData.length - 1)) * 100);
-                    const position = percentile < 25 ? 'Bottom 25%' : 
-                                    percentile > 75 ? 'Top 25%' : 
+                    // Invert percentile for descending rankings (rank #1 = highest = 100th percentile)
+                    const percentile = Math.round(((this.sortedData.length - 1 - i) / (this.sortedData.length - 1)) * 100);
+                    const position = percentile > 75 ? 'Top 25%' :
+                                    percentile < 25 ? 'Bottom 25%' :
                                     'Middle 50%';
                     return `
                         <tr class="${s.serverid === 63 ? 'highlight' : ''}" data-rank="${i}">
