@@ -1835,9 +1835,9 @@
                 const isServer63 = sorted.map(s => s.serverid === 63);
 
                 // Point styling: highlight Server 63
-                const pointRadius = isServer63.map(is63 => is63 ? 7 : 4);
-                const pointBorderWidth = isServer63.map(is63 => is63 ? 3 : 1);
-                const pointBgColor = isServer63.map(is63 => is63 ? this.accentColor : `${this.accentColor}99`);
+                const pointRadius = isServer63.map(is63 => is63 ? 10 : 4);
+                const pointBorderWidth = isServer63.map(is63 => is63 ? 4 : 1);
+                const pointBgColor = isServer63.map(is63 => is63 ? this.accentColor : `${this.accentColor}66`);
                 const pointBorderColor = isServer63.map(is63 => is63 ? '#ffffff' : this.accentColor);
 
                 const formatter = this.formatter;
@@ -1858,11 +1858,11 @@
                         }, {
                             // Dot overlay using scatter-like points on a bar chart
                             type: 'bubble',
-                            data: values.map((v, i) => ({ x: i, y: v, r: isServer63[i] ? 7 : 4 })),
+                            data: values.map((v, i) => ({ x: i, y: v, r: isServer63[i] ? 10 : 4 })),
                             backgroundColor: pointBgColor,
                             borderColor: pointBorderColor,
                             borderWidth: pointBorderWidth,
-                            hoverRadius: 8
+                            hoverRadius: 12
                         }]
                     },
                     options: {
@@ -1876,7 +1876,7 @@
                                 callbacks: {
                                     title: function(ctx) {
                                         const idx = ctx[0].dataIndex;
-                                        return `Server: ${sorted[idx].serverid}`;
+                                        return `Server: US ${sorted[idx].serverid}`;
                                     },
                                     label: function(ctx) {
                                         const idx = ctx.dataIndex;
