@@ -565,7 +565,17 @@
                 <div class="panel-number bg-purple-500 text-white">1</div>
                 <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <h3 class="orbitron text-base font-bold text-purple-300 mb-1">RANKED POPULATION</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="orbitron text-base font-bold text-purple-300">RANKED POPULATION</h3>
+                            <div style="position: relative;">
+                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-pop')">⋮</button>
+                                <div id="menu-pop" class="overflow-menu">
+                                    <div class="overflow-menu-item" onclick="window.popExplorer?.showDistribution(); toggleOverflowMenu('menu-pop')">📊 View Distribution</div>
+                                    <div class="overflow-menu-item" onclick="window.popExplorer?.showFullRankings(); toggleOverflowMenu('menu-pop')">📋 Full Rankings</div>
+                                    <div class="overflow-menu-item" onclick="window.popExplorer?.exportCSV(); toggleOverflowMenu('menu-pop')">📥 Export CSV</div>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by number of players</p>
                         <canvas id="chart1" class="mb-2 ranking-chart"></canvas>
                     </div>
@@ -580,6 +590,7 @@
                             <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-pop-63">--</div>
                             <div class="text-[9px] text-slate-400">players</div>
                             <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-pop-63-rank">--</div>
+                            <div class="percentile-badge" id="kpi-pop-63-percentile">--</div>
                         </div>
                         <div class="kpi-card">
                             <div class="text-[10px] text-purple-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
@@ -599,7 +610,17 @@
                 <div class="panel-number bg-pink-500 text-white">2</div>
                 <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <h3 class="orbitron text-base font-bold text-pink-400 mb-1">AVERAGE LEVEL</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="orbitron text-base font-bold text-pink-400">AVERAGE LEVEL</h3>
+                            <div style="position: relative;">
+                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-level')">⋮</button>
+                                <div id="menu-level" class="overflow-menu">
+                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.showDistribution(); toggleOverflowMenu('menu-level')">📊 View Distribution</div>
+                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.showFullRankings(); toggleOverflowMenu('menu-level')">📋 Full Rankings</div>
+                                    <div class="overflow-menu-item" onclick="window.levelExplorer?.exportCSV(); toggleOverflowMenu('menu-level')">📥 Export CSV</div>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average player level</p>
                         <canvas id="chart2" class="mb-2 ranking-chart"></canvas>
                     </div>
@@ -614,6 +635,7 @@
                             <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-level-63">--</div>
                             <div class="text-[9px] text-slate-400">level</div>
                             <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-level-63-rank">--</div>
+                            <div class="percentile-badge" id="kpi-level-63-percentile">--</div>
                         </div>
                         <div class="kpi-card">
                             <div class="text-[10px] text-pink-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
@@ -633,7 +655,17 @@
                 <div class="panel-number bg-blue-500 text-white">3</div>
                 <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <h3 class="orbitron text-base font-bold text-blue-300 mb-1">TOTAL SERVER POWER (TRILLIONS)</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="orbitron text-base font-bold text-blue-300">TOTAL SERVER POWER (TRILLIONS)</h3>
+                            <div style="position: relative;">
+                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-power')">⋮</button>
+                                <div id="menu-power" class="overflow-menu">
+                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.showDistribution(); toggleOverflowMenu('menu-power')">📊 View Distribution</div>
+                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.showFullRankings(); toggleOverflowMenu('menu-power')">📋 Full Rankings</div>
+                                    <div class="overflow-menu-item" onclick="window.powerExplorer?.exportCSV(); toggleOverflowMenu('menu-power')">📥 Export CSV</div>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by total power</p>
                         <canvas id="chart3" class="mb-2 ranking-chart"></canvas>
                     </div>
@@ -648,6 +680,7 @@
                             <div class="text-lg font-bold text-amber-300 orbitron" id="kpi-power-63">--</div>
                             <div class="text-[9px] text-slate-400">power</div>
                             <div class="text-[10px] text-amber-400 font-semibold mt-1" id="kpi-power-63-rank">--</div>
+                            <div class="percentile-badge" id="kpi-power-63-percentile">--</div>
                         </div>
                         <div class="kpi-card">
                             <div class="text-[10px] text-blue-300 font-semibold orbitron mb-1">BOTTOM 5 AVG</div>
@@ -695,7 +728,17 @@
                 <div class="panel-number bg-orange-500 text-black">6</div>
                 <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <h3 class="orbitron text-base font-bold text-orange-400 mb-1">AVERAGE POWER PER PLAYER (MILLIONS)</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="orbitron text-base font-bold text-orange-400">AVERAGE POWER PER PLAYER (MILLIONS)</h3>
+                            <div style="position: relative;">
+                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-avgpower')">⋮</button>
+                                <div id="menu-avgpower" class="overflow-menu">
+                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.showDistribution(); toggleOverflowMenu('menu-avgpower')">📊 View Distribution</div>
+                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.showFullRankings(); toggleOverflowMenu('menu-avgpower')">📋 Full Rankings</div>
+                                    <div class="overflow-menu-item" onclick="window.avgPowerExplorer?.exportCSV(); toggleOverflowMenu('menu-avgpower')">📥 Export CSV</div>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by average power per player</p>
                         <canvas id="chart6" class="mb-2 ranking-chart"></canvas>
                     </div>
@@ -743,7 +786,17 @@
                 <div class="panel-number bg-amber-500 text-black">8</div>
                 <div class="p-6 pt-16 flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <h3 class="orbitron text-base font-bold text-amber-400 mb-1">INCURSION WIN RATE (%) RANKING</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="orbitron text-base font-bold text-amber-400">INCURSION WIN RATE (%) RANKING</h3>
+                            <div style="position: relative;">
+                                <button class="overflow-btn" onclick="toggleOverflowMenu('menu-incursion')">⋮</button>
+                                <div id="menu-incursion" class="overflow-menu">
+                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.showDistribution(); toggleOverflowMenu('menu-incursion')">📊 View Distribution</div>
+                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.showFullRankings(); toggleOverflowMenu('menu-incursion')">📋 Full Rankings</div>
+                                    <div class="overflow-menu-item" onclick="window.incursionExplorer?.exportCSV(); toggleOverflowMenu('menu-incursion')">📥 Export CSV</div>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-xs text-slate-400 mb-4">Servers ranked by incursion win rate</p>
                         <canvas id="chart8" class="mb-2 ranking-chart"></canvas>
                     </div>
@@ -1118,13 +1171,13 @@
 
             createHistogram() {
                 const values = this.data.map(d => d[this.metricKey]);
-                
+
                 // Adaptive binning: use log scale for highly skewed data
                 const max = Math.max(...values);
                 const min = Math.min(...values);
                 const range = max - min;
                 const skewness = (max / (min + 1)); // Rough skew indicator
-                
+
                 let bins;
                 if (skewness > 5) {
                     // Log-scale binning for skewed data (e.g., power metrics)
@@ -1293,8 +1346,8 @@
                         },
                         scales: {
                             x: {
-                                ticks: { 
-                                    color: '#94a3b8', 
+                                ticks: {
+                                    color: '#94a3b8',
                                     font: { size: 9 },
                                     maxRotation: 45,
                                     minRotation: 45
@@ -1463,6 +1516,23 @@
             }
         }
 
+        // Overflow menu toggle
+        function toggleOverflowMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const allMenus = document.querySelectorAll('.overflow-menu');
+            allMenus.forEach(m => {
+                if (m.id !== menuId) m.classList.remove('show');
+            });
+            menu.classList.toggle('show');
+        }
+
+        // Close menus on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.overflow-btn') && !e.target.closest('.overflow-menu')) {
+                document.querySelectorAll('.overflow-menu').forEach(m => m.classList.remove('show'));
+            }
+        });
+
         // Modal control functions
         function closeDistributionModal() {
             document.getElementById('distributionModal').classList.remove('show');
@@ -1526,6 +1596,9 @@
                 document.getElementById('kpi-pop-top').textContent = formatNum(avg(popRanking.top5, s => s.players));
                 document.getElementById('kpi-pop-63').textContent = formatNum(server63.players);
                 document.getElementById('kpi-pop-63-rank').textContent = `Rank #${popRanking.selectedRank}`;
+                if (window.popExplorer) {
+                    document.getElementById('kpi-pop-63-percentile').textContent = `${window.popExplorer.stats.percentile}th percentile`;
+                }
                 document.getElementById('kpi-pop-bot').textContent = formatNum(avg(popRanking.bottom5, s => s.players));
 
                 const chart1 = new Chart(document.getElementById('chart1'), {
@@ -1580,6 +1653,15 @@
                     }
                 });
 
+                // Initialize Population Explorer
+                window.popExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Population',
+                    'players',
+                    (val) => formatNum(val),
+                    '#a855f7'
+                );
+
                 // ========== PANEL 2: AVERAGE LEVEL RANKING ==========
                 const levelSorted = [...data].sort((a, b) => a.avglevel - b.avglevel);
                 const levelRanking = createRankingDisplay(levelSorted, s => s.avglevel, server63);
@@ -1588,6 +1670,12 @@
                 document.getElementById('kpi-level-top').textContent = avg(levelRanking.top5, s => s.avglevel).toFixed(1);
                 document.getElementById('kpi-level-63').textContent = server63 ? server63.avglevel.toFixed(1) : '--';
                 document.getElementById('kpi-level-63-rank').textContent = levelRanking.selectedRank ? `Rank #${levelRanking.selectedRank}` : '--';
+                if (window.levelExplorer) {
+                    document.getElementById('kpi-level-63-percentile').textContent = `${window.levelExplorer.stats.percentile}th percentile`;
+                }
+                if (window.levelExplorer) {
+                    document.getElementById('kpi-level-63-percentile').textContent = `${window.levelExplorer.stats.percentile}th percentile`;
+                }
                 document.getElementById('kpi-level-bot').textContent = avg(levelRanking.bottom5, s => s.avglevel).toFixed(1);
 
                 const chart2 = new Chart(document.getElementById('chart2'), {
@@ -1644,6 +1732,15 @@
                     }
                 });
 
+                // Initialize Level Explorer
+                window.levelExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Average Level',
+                    'avglevel',
+                    (val) => val.toFixed(1),
+                    '#ec4899'
+                );
+
                 // ========== PANEL 3: TOTAL POWER RANKING ==========
                 const powerSorted = [...data].sort((a, b) => a.totalpower - b.totalpower);
                 const powerRanking = createRankingDisplay(powerSorted, s => s.totalpower, server63);
@@ -1652,6 +1749,9 @@
                 document.getElementById('kpi-power-top').textContent = (avg(powerRanking.top5, s => s.totalpower) / 1e12).toFixed(2) + ' T';
                 document.getElementById('kpi-power-63').textContent = server63 ? (server63.totalpower / 1e12).toFixed(2) + ' T' : '--';
                 document.getElementById('kpi-power-63-rank').textContent = powerRanking.selectedRank ? `Rank #${powerRanking.selectedRank}` : '--';
+                if (window.powerExplorer) {
+                    document.getElementById('kpi-power-63-percentile').textContent = `${window.powerExplorer.stats.percentile}th percentile`;
+                }
                 document.getElementById('kpi-power-bot').textContent = (avg(powerRanking.bottom5, s => s.totalpower) / 1e12).toFixed(2) + ' T';
 
                 const chart3 = new Chart(document.getElementById('chart3'), {
@@ -1705,6 +1805,15 @@
                         }
                     }
                 });
+
+                // Initialize Power Explorer
+                window.powerExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Total Power',
+                    'totalpower',
+                    (val) => formatNum(val / 1000000000000) + 'T',
+                    '#3b82f6'
+                );
 
                 // ========== PANEL 4: POPULATION vs AVERAGE LEVEL ==========
                 const popMedian = data.map(s => s.players).sort((a,b) => a-b)[Math.floor(data.length/2)];
@@ -1945,6 +2054,15 @@
                     }
                 });
 
+                // Initialize Average Power Per Player Explorer
+                window.avgPowerExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Avg Power Per Player',
+                    'avgpowerperplayer',
+                    (val) => formatNum(val / 1000000) + 'M',
+                    '#fb923c'
+                );
+
                 // ========== PANEL 7: INCURSION WIN RATE vs POWER PER PLAYER ==========
                 const withIncursions = data.filter(s => s.total_incursions > 0);
                 const winRateMedian = withIncursions.map(s => s.incursion_win_rate).sort((a,b) => a-b)[Math.floor(withIncursions.length/2)];
@@ -2101,6 +2219,15 @@
                         }
                     }
                 });
+
+                // Initialize Incursion Win Rate Explorer
+                window.incursionExplorer = new MetricDistributionExplorer(
+                    data,
+                    'Incursion Win Rate',
+                    'incursionwinrate',
+                    (val) => val.toFixed(1) + '%',
+                    '#f59e0b'
+                );
 
                 // ========== PANEL 9: SERVER CREATION COHORTS ==========
                 const years = {};
